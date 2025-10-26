@@ -248,4 +248,43 @@ public class FirebaseService {
 
         return topScores;
     }
+
+    /**
+     * Get ALL scores from leaderboard without server-side ordering or limiting.
+     * Sorting and ranking should be handled on the application side.
+     */
+    public List<LeaderboardEntry> getAllScores() {
+        List<LeaderboardEntry> scores = new ArrayList<>();
+
+        if (firestore == null) {
+            System.err.println("Firestore not initialized");
+            return scores;
+        }
+
+        try {
+            List<QueryDocumentSnapshot> documents = firestore.collection("leaderboard")
+                    .get()
+                    .get()
+                    .getDocuments();
+
+            for (QueryDocumentSnapshot document : documents) {
+                String username = document.getString("username");
+                Long scoreLong = document.getLong("score");
+                int score = scoreLong != null ? scoreLong.intValue() : 0;
+
+                // Only add valid entries
+                if (username != null && !username.isEmpty()) {
+                    scores.add(new LeaderboardEntry(username, score));
+                }
+            }
+
+            System.out.println("Retrieved " + scores.size() + " scores (unsorted)");
+
+        } catch (InterruptedException | ExecutionException e) {
+            System.err.println("Error retrieving all scores: " + e.getMessage());
+            System.err.println("Error type: " + e.getClass().getSimpleName());
+        }
+
+        return scores;
+    }
 }

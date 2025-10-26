@@ -18,6 +18,7 @@ import org.helitha.heartapigame.managers.ScreenManager;
 import org.helitha.heartapigame.models.LeaderboardEntry;
 import org.helitha.heartapigame.services.FirebaseService;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class LeaderboardScreenController {
@@ -54,27 +55,28 @@ public class LeaderboardScreenController {
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         scoreColumn.setCellValueFactory(cellData -> cellData.getValue().scoreProperty().asObject());
 
-        // Load top scores from Firebase
-        loadTopScores();
+        // Load all scores from Firebase and sort on the application side
+        loadAllScoresSorted();
     }
 
-    private void loadTopScores() {
+    private void loadAllScoresSorted() {
         // Load scores in background thread
         new Thread(() -> {
             try {
-                List<LeaderboardEntry> topScores = FirebaseService.getInstance().getTopScores();
+                List<LeaderboardEntry> allScores = FirebaseService.getInstance().getAllScores();
+
+                // Sort client-side by score descending
+                allScores.sort(Comparator.comparingInt(LeaderboardEntry::getScore).reversed());
 
                 // Convert to table rows with rank
                 ObservableList<LeaderboardRow> rows = FXCollections.observableArrayList();
-                for (int i = 0; i < topScores.size(); i++) {
-                    LeaderboardEntry entry = topScores.get(i);
+                for (int i = 0; i < allScores.size(); i++) {
+                    LeaderboardEntry entry = allScores.get(i);
                     rows.add(new LeaderboardRow(i + 1, entry.getUsername(), entry.getScore()));
                 }
 
                 // Update UI on JavaFX thread
-                Platform.runLater(() -> {
-                    leaderboardTable.setItems(rows);
-                });
+                Platform.runLater(() -> leaderboardTable.setItems(rows));
 
             } catch (Exception e) {
                 System.err.println("Error loading leaderboard: " + e.getMessage());
