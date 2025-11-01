@@ -22,13 +22,13 @@
         <Label text="Choose your challenge level" styleClass="subtitle"/>
 
         <VBox spacing="18" alignment="CENTER" styleClass="menu-container">
-            <Button fx:id="easyButton" text="Easy (30 seconds)" onAction="#handleEasy"
+            <Button fx:id="easyButton" text="Easy (45 seconds)" onAction="#handleEasy"
                     styleClass="btn-8bit, btn-start" prefWidth="320"/>
 
-            <Button fx:id="mediumButton" text="Medium (20 seconds)" onAction="#handleMedium"
+            <Button fx:id="mediumButton" text="Medium (30 seconds)" onAction="#handleMedium"
                     styleClass="btn-8bit, btn-options" prefWidth="320"/>
 
-            <Button fx:id="hardButton" text="Hard (10 seconds)" onAction="#handleHard"
+            <Button fx:id="hardButton" text="Hard (20 seconds)" onAction="#handleHard"
                     styleClass="btn-8bit, btn-credits" prefWidth="320"/>
         </VBox>
 

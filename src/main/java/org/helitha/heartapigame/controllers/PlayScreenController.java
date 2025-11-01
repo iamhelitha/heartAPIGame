@@ -103,9 +103,12 @@ public class PlayScreenController {
         // Update mute button
         updateMuteButton();
 
+        System.out.println("========== GAME STARTED ==========");
         System.out.println("Play screen loaded");
-        System.out.println("Timer: " + timeRemaining + " seconds");
         System.out.println("Difficulty: " + GameManager.getInstance().getDifficulty());
+        System.out.println("Timer: " + timeRemaining + " seconds");
+        System.out.println("Points per correct answer: " + GameManager.getInstance().getPointsForDifficulty());
+        System.out.println("==================================");
 
         // Start countdown timer (EVENT-DRIVEN: Time-based events)
         startCountdownTimer();
@@ -304,7 +307,7 @@ public class PlayScreenController {
             GameManager.getInstance().addScore(points);
             updateScoreLabel();
 
-            System.out.println("Added " + points + " points. Total score: " + GameManager.getInstance().getScore());
+            System.out.println("✓ Correct! Added " + points + " points (" + GameManager.getInstance().getDifficulty() + " mode). Total score: " + GameManager.getInstance().getScore());
 
             // Show visual feedback
             Notifications.create()
@@ -318,7 +321,7 @@ public class PlayScreenController {
 
         } else {
             // Wrong answer
-            System.out.println("Wrong answer! Correct was: " + correctAnswer);
+            System.out.println("✗ Wrong answer! Correct was: " + correctAnswer);
 
             // Play incorrect sound
             if (incorrectSound != null) {
@@ -331,7 +334,7 @@ public class PlayScreenController {
                 int currentScore = GameManager.getInstance().getScore();
                 GameManager.getInstance().setScore(Math.max(0, currentScore - penalty));
                 updateScoreLabel();
-                System.out.println("Lost " + penalty + " point. Total score: " + GameManager.getInstance().getScore());
+                System.out.println("✗ Lost " + penalty + " point (" + GameManager.getInstance().getDifficulty() + " mode). Total score: " + GameManager.getInstance().getScore());
 
                 // Show visual feedback with penalty
                 Notifications.create()
@@ -341,6 +344,7 @@ public class PlayScreenController {
                     .showWarning();
             } else {
                 // Easy mode - no penalty, just show correct answer
+                System.out.println("No penalty in Easy mode. Total score: " + GameManager.getInstance().getScore());
                 Notifications.create()
                     .title("Incorrect ✗")
                     .text("Correct answer: " + correctAnswer)
