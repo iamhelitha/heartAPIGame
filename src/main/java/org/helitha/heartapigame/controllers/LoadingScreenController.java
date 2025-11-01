@@ -22,22 +22,22 @@ public class LoadingScreenController implements Initializable {
         loadingTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                // Total target duration ~360ms
+                // Total target duration ~1360ms (increased by 1 second)
                 updateMessage("Loading game logic...");
                 updateProgress(0, 100);
-                Thread.sleep(60);
+                Thread.sleep(260);
 
                 updateMessage("Initializing services...");
                 updateProgress(30, 100);
-                Thread.sleep(90);
+                Thread.sleep(390);
 
                 updateMessage("Loading assets...");
                 updateProgress(60, 100);
-                Thread.sleep(90);
+                Thread.sleep(390);
 
                 updateMessage("Finalizing setup...");
                 updateProgress(90, 100);
-                Thread.sleep(90);
+                Thread.sleep(290);
 
                 updateMessage("Done!");
                 updateProgress(100, 100);

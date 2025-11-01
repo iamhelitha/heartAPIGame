@@ -52,6 +52,12 @@ public class ScreenManager {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(fxmlFile));
             Parent root = fxmlLoader.load();
             Scene scene = new Scene(root, Main.WINDOW_WIDTH, Main.WINDOW_HEIGHT);
+            
+            // Apply the global stylesheet to ensure consistent 8-bit styling across all screens
+            scene.getStylesheets().add(
+                Main.class.getResource("css/global-styles.css").toExternalForm()
+            );
+            
             stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();

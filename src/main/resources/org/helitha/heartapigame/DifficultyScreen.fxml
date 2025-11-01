@@ -8,37 +8,40 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.helitha.heartapigame.controllers.DifficultyScreenController"
-            styleClass="main-background"
-            stylesheets="@css/global-styles.css">
-
-    <!-- Home Button -->
-    <Button text="Home" onAction="#handleHomeButton"
-            styleClass="btn-home"
-            AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
+            styleClass="main-background">
 
     <!-- Main Content -->
     <VBox alignment="CENTER" spacing="25.0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="80.0"/>
         </padding>
 
-        <Label text="Select Difficulty" styleClass="title-medium"/>
+        <Label text="Select Difficulty" styleClass="game-title"/>
 
-    <Label text="Choose your challenge level" styleClass="subtitle-info"/>
+        <Label text="Choose your challenge level" styleClass="subtitle"/>
 
-    <Button fx:id="easyButton" text="Easy (30 seconds)" onAction="#handleEasy"
-            styleClass="btn-primary, btn-large"/>
+        <VBox spacing="18" alignment="CENTER" styleClass="menu-container">
+            <Button fx:id="easyButton" text="Easy (30 seconds)" onAction="#handleEasy"
+                    styleClass="btn-8bit, btn-start" prefWidth="320"/>
 
-    <Button fx:id="mediumButton" text="Medium (20 seconds)" onAction="#handleMedium"
-            styleClass="btn-warning, btn-large"/>
+            <Button fx:id="mediumButton" text="Medium (20 seconds)" onAction="#handleMedium"
+                    styleClass="btn-8bit, btn-options" prefWidth="320"/>
 
-    <Button fx:id="hardButton" text="Hard (10 seconds)" onAction="#handleHard"
-            styleClass="btn-danger, btn-large"/>
+            <Button fx:id="hardButton" text="Hard (10 seconds)" onAction="#handleHard"
+                    styleClass="btn-8bit, btn-credits" prefWidth="320"/>
+        </VBox>
 
-    <Button fx:id="backButton" text="Back" onAction="#handleBack"
-            styleClass="btn-gray, btn-normal"
-            prefWidth="200" prefHeight="40"/>
+        <Button fx:id="backButton" text="← Back" onAction="#handleBack"
+                styleClass="btn-8bit, btn-ghost" prefWidth="220"/>
     </VBox>
-            styleClass="btn-gray, btn-normal"
+    
+    <!-- Top Buttons (on top layer) -->
+    <Button text="←" onAction="#handleHomeButton"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.leftAnchor="15.0"/>
 
+    <Button fx:id="muteButton" text="🔊" onAction="#handleMute"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.rightAnchor="15.0"/>
+</AnchorPane>

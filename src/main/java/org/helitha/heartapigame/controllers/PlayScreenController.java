@@ -19,6 +19,7 @@ import javafx.scene.media.AudioClip;
 import org.helitha.heartapigame.managers.GameManager;
 import org.helitha.heartapigame.managers.GameSession;
 import org.helitha.heartapigame.managers.ScreenManager;
+import org.helitha.heartapigame.managers.SoundManager;
 import org.helitha.heartapigame.models.GameData;
 import org.helitha.heartapigame.services.ApiService;
 import org.helitha.heartapigame.services.FirebaseService;
@@ -74,6 +75,9 @@ public class PlayScreenController {
     @FXML
     private Button button4;
 
+    @FXML
+    private Button muteButton;
+
     private Timeline countdown;
     private int timeRemaining;
     private int correctAnswer;
@@ -95,6 +99,9 @@ public class PlayScreenController {
 
         // Load sound effects
         loadSoundEffects();
+
+        // Update mute button
+        updateMuteButton();
 
         System.out.println("Play screen loaded");
         System.out.println("Timer: " + timeRemaining + " seconds");
@@ -423,5 +430,17 @@ public class PlayScreenController {
                 countdown.play();
             }
         }
+    }
+
+    private void updateMuteButton() {
+        if (muteButton != null) {
+            muteButton.setText(SoundManager.getInstance().isMuted() ? "🔇" : "🔊");
+        }
+    }
+
+    @FXML
+    private void handleMute() {
+        SoundManager.getInstance().toggleMute();
+        updateMuteButton();
     }
 }

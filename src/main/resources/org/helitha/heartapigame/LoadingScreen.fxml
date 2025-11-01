@@ -7,16 +7,16 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.helitha.heartapigame.controllers.LoadingScreenController"
-            styleClass="main-background"
-            stylesheets="@css/global-styles.css">
+            styleClass="main-background">
     <children>
-        <VBox alignment="CENTER" spacing="10.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <VBox alignment="CENTER" spacing="20.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <padding>
                 <Insets topRightBottomLeft="20" />
             </padding>
             <children>
-                <ProgressBar fx:id="progressBar" progress="0.0" prefWidth="300" />
-                <Label fx:id="statusLabel" text="Loading..." />
+                <Label text="Loading..." styleClass="game-title"/>
+                <ProgressBar fx:id="progressBar" progress="0.0" prefWidth="400" />
+                <Label fx:id="statusLabel" text="Initializing..." styleClass="subtitle"/>
             </children>
         </VBox>
     </children>

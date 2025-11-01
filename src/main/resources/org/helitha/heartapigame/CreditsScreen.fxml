@@ -8,35 +8,38 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.helitha.heartapigame.controllers.CreditsScreenController"
-            styleClass="main-background"
-            stylesheets="@css/global-styles.css">
+            styleClass="main-background">
 
-    <!-- Home Button -->
-            styleClass="btn-home"
-            prefWidth="80" prefHeight="35"
-            AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
-
-    <!-- Credits Content -->
+    <!-- Credits Content (behind buttons) -->
     <VBox alignment="CENTER" spacing="20.0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <padding>
-            <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
+            <Insets bottom="40.0" left="40.0" right="40.0" top="80.0"/>
         </padding>
 
-        <Label text="Credits" styleClass="title-large"/>
+        <Label text="Credits" styleClass="game-title"/>
 
         <Label text="Heart API Game" styleClass="subtitle"/>
 
-        <VBox spacing="10.0" alignment="CENTER">
+        <VBox spacing="10.0" alignment="CENTER" styleClass="menu-container">
             <Label text="Developed by: Helitha Guruge" styleClass="text-regular"/>
             <Label text="Framework: JavaFX" styleClass="text-regular"/>
             <Label text="Backend: Firebase" styleClass="text-regular"/>
             <Label text="API: Heart Game API" styleClass="text-regular"/>
         </VBox>
 
-        <Label text="Thank you for playing!" styleClass="subtitle-large, label-success"/>
+        <Label text="Thank you for playing!" styleClass="subtitle"/>
 
         <Button text="Back" onAction="#handleBack"
-                styleClass="btn-gray, btn-small"/>
+                styleClass="btn-8bit, btn-ghost"/>
     </VBox>
+    
+    <!-- Top Buttons (on top layer) -->
+    <Button text="←" onAction="#handleHomeButton"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.leftAnchor="15.0"/>
+
+    <Button fx:id="muteButton" text="🔊" onAction="#handleMute"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.rightAnchor="15.0"/>
 </AnchorPane>

@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -15,6 +16,7 @@ import javafx.stage.Stage;
 import org.helitha.heartapigame.managers.GameManager;
 import org.helitha.heartapigame.managers.GameSession;
 import org.helitha.heartapigame.managers.ScreenManager;
+import org.helitha.heartapigame.managers.SoundManager;
 import org.helitha.heartapigame.models.LeaderboardEntry;
 import org.helitha.heartapigame.services.FirebaseService;
 
@@ -39,6 +41,9 @@ public class LeaderboardScreenController {
     private TableColumn<LeaderboardRow, Integer> scoreColumn;
 
     @FXML
+    private Button muteButton;
+
+    @FXML
     public void initialize() {
         // Display the final score
         int finalScore = GameManager.getInstance().getScore();
@@ -55,8 +60,23 @@ public class LeaderboardScreenController {
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         scoreColumn.setCellValueFactory(cellData -> cellData.getValue().scoreProperty().asObject());
 
+        // Update mute button
+        updateMuteButton();
+
         // Load all scores from Firebase and sort on the application side
         loadAllScoresSorted();
+    }
+
+    private void updateMuteButton() {
+        if (muteButton != null) {
+            muteButton.setText(SoundManager.getInstance().isMuted() ? "🔇" : "🔊");
+        }
+    }
+
+    @FXML
+    private void handleMute() {
+        SoundManager.getInstance().toggleMute();
+        updateMuteButton();
     }
 
     private void loadAllScoresSorted() {
@@ -93,8 +113,8 @@ public class LeaderboardScreenController {
 
     @FXML
     private void handleHomeButton(ActionEvent event) {
-        ScreenManager sm = new ScreenManager((Stage) ((Node) event.getSource()).getScene().getWindow());
-        sm.switchScene("HomeScreen.fxml");
+        SoundManager.getInstance().playClickSound();
+        ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }
 
     /**

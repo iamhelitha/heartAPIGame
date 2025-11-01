@@ -3,13 +3,9 @@ package org.helitha.heartapigame.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import org.helitha.heartapigame.managers.GameSession;
 import org.helitha.heartapigame.managers.ScreenManager;
-
-import java.net.URL;
+import org.helitha.heartapigame.managers.SoundManager;
 
 public class HomeScreenController {
 
@@ -28,9 +24,8 @@ public class HomeScreenController {
     @FXML
     private Button logoutButton;
 
-    private MediaPlayer backgroundMusicPlayer;
-    private AudioClip clickSound;
-    private AudioClip hoverSound;
+    @FXML
+    private Button muteButton;
 
     @FXML
     public void initialize() {
@@ -40,77 +35,35 @@ public class HomeScreenController {
             userNameLabel.setText("Welcome, " + displayName + "!");
         }
 
-        // Load and play background music
-        loadBackgroundMusic();
+        // Start background music using SoundManager
+        SoundManager.getInstance().playBackgroundMusic();
 
-        // Load sound effects
-        loadSoundEffects();
+        // Update mute button text
+        updateMuteButton();
 
-        // Add hover and click sound effects to all buttons
+        // Add click sound effects to all buttons
         setupButtonSounds(playButton);
         setupButtonSounds(leaderboardButton);
         setupButtonSounds(creditsButton);
         setupButtonSounds(logoutButton);
     }
 
-    private void loadBackgroundMusic() {
-        try {
-            URL musicResource = getClass().getResource("/background_music.mp3");
-            if (musicResource != null) {
-                Media media = new Media(musicResource.toString());
-                backgroundMusicPlayer = new MediaPlayer(media);
-                backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop forever
-                backgroundMusicPlayer.setVolume(0.3); // Set volume to 30%
-                backgroundMusicPlayer.play();
-                System.out.println("Background music started");
-            } else {
-                System.out.println("Background music file not found");
-            }
-        } catch (Exception e) {
-            System.err.println("Error loading background music: " + e.getMessage());
-        }
-    }
-
-    private void loadSoundEffects() {
-        try {
-            URL clickResource = getClass().getResource("/click.wav");
-            if (clickResource != null) {
-                clickSound = new AudioClip(clickResource.toString());
-                clickSound.setVolume(0.5);
-            } else {
-                System.out.println("click.wav not found");
-            }
-
-            URL hoverResource = getClass().getResource("/hover.wav");
-            if (hoverResource != null) {
-                hoverSound = new AudioClip(hoverResource.toString());
-                hoverSound.setVolume(0.3);
-            } else {
-                System.out.println("hover.wav not found");
-            }
-        } catch (Exception e) {
-            System.err.println("Error loading sound effects: " + e.getMessage());
+    private void updateMuteButton() {
+        if (muteButton != null) {
+            muteButton.setText(SoundManager.getInstance().isMuted() ? "🔇" : "🔊");
         }
     }
 
     private void setupButtonSounds(Button button) {
-        // Play hover sound when mouse enters
-        button.setOnMouseEntered(event -> {
-            if (hoverSound != null) {
-                hoverSound.play();
-            }
-        });
-
         // Play click sound when mouse is pressed
         button.setOnMousePressed(event -> {
-            if (clickSound != null) {
-                clickSound.play();
-            }
+            SoundManager.getInstance().playClickSound();
         });
     }
 
     @FXML
     private void handlePlay() {
+        SoundManager.getInstance().playClickSound();
         System.out.println("Starting game for " + GameSession.getInstance().getDisplayName());
         // Navigate to difficulty selection screen
         ScreenManager.getInstance().switchScene("DifficultyScreen.fxml");
@@ -118,6 +71,7 @@ public class HomeScreenController {
 
     @FXML
     private void handleLeaderboard() {
+        SoundManager.getInstance().playClickSound();
         System.out.println("Opening leaderboard");
         // Navigate to leaderboard screen
         ScreenManager.getInstance().switchScene("LeaderboardScreen.fxml");
@@ -125,6 +79,7 @@ public class HomeScreenController {
 
     @FXML
     private void handleCredits() {
+        SoundManager.getInstance().playClickSound();
         System.out.println("Opening credits");
         // Navigate to credits screen
         ScreenManager.getInstance().switchScene("CreditsScreen.fxml");
@@ -132,10 +87,10 @@ public class HomeScreenController {
 
     @FXML
     private void handleLogout() {
+        SoundManager.getInstance().playClickSound();
+
         // Stop background music
-        if (backgroundMusicPlayer != null) {
-            backgroundMusicPlayer.stop();
-        }
+        SoundManager.getInstance().stopBackgroundMusic();
 
         // Clear the session
         GameSession.getInstance().clearSession();
@@ -143,5 +98,11 @@ public class HomeScreenController {
 
         // Return to login screen
         ScreenManager.getInstance().switchScene("LoginScreen.fxml");
+    }
+
+    @FXML
+    private void handleMute() {
+        SoundManager.getInstance().toggleMute();
+        updateMuteButton();
     }
 }

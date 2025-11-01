@@ -11,59 +11,57 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.helitha.heartapigame.controllers.PlayScreenController"
-            styleClass="main-background"
-            stylesheets="@css/global-styles.css">
+            styleClass="main-background">
 
-    <!-- Home Button -->
-            styleClass="btn-home"
-            prefWidth="80" prefHeight="35"
-            AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
-
-    <!-- Main Content -->
+    <!-- Main Content (behind buttons) -->
     <VBox alignment="CENTER" spacing="20.0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="80.0"/>
         </padding>
 
         <!-- Score and Timer -->
-    <HBox spacing="40.0" alignment="CENTER">
-        <Label fx:id="scoreLabel" text="Score: 0"
-               styleClass="score-label"/>
-        <Label fx:id="timeLabel" text="Time: 45"
-               styleClass="time-label"/>
-    </HBox>
+        <HBox spacing="40.0" alignment="CENTER" styleClass="menu-container">
+            <Label fx:id="scoreLabel" text="Score: 0" styleClass="title-large"/>
+            <Label fx:id="timeLabel" text="Time: 45" styleClass="title-large"/>
+        </HBox>
 
-    <!-- Question Label -->
-    <Label fx:id="questionLabel" text="How many HEARTS?"
-           styleClass="question-label"/>
+        <!-- Question Label -->
+        <Label fx:id="questionLabel" text="How many HEARTS?" styleClass="subtitle"/>
 
-    <!-- Image View -->
-    <ImageView fx:id="imageView" fitHeight="300" fitWidth="400" preserveRatio="true"
-               styleClass="game-image"/>
+        <!-- Image View -->
+        <ImageView fx:id="imageView" fitHeight="250" fitWidth="350" preserveRatio="true"/>
 
-    <!-- Answer Buttons Grid -->
-    <GridPane hgap="15" vgap="15" alignment="CENTER">
-        <Button fx:id="button1" text="0" onAction="#handleAnswer1"
-                styleClass="btn-answer"
-                GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <!-- Answer Buttons Grid -->
+        <GridPane hgap="15" vgap="15" alignment="CENTER">
+            <Button fx:id="button1" text="0" onAction="#handleAnswer1"
+                    styleClass="btn-8bit, btn-start" prefWidth="120"
+                    GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 
-        <Button fx:id="button2" text="1" onAction="#handleAnswer2"
-                styleClass="btn-answer"
-                GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            <Button fx:id="button2" text="1" onAction="#handleAnswer2"
+                    styleClass="btn-8bit, btn-options" prefWidth="120"
+                    GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
-        <Button fx:id="button3" text="2" onAction="#handleAnswer3"
-                styleClass="btn-answer"
-                GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Button fx:id="button3" text="2" onAction="#handleAnswer3"
+                    styleClass="btn-8bit, btn-credits" prefWidth="120"
+                    GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
-        <Button fx:id="button4" text="3" onAction="#handleAnswer4"
-                styleClass="btn-answer"
-                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    </GridPane>
+            <Button fx:id="button4" text="3" onAction="#handleAnswer4"
+                    styleClass="btn-8bit, btn-start" prefWidth="120"
+                    GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        </GridPane>
 
-    <!-- Exit Button -->
-    <Button text="Exit Game" onAction="#handleExit"
-            styleClass="btn-gray, btn-small"/>
+        <!-- Exit Button -->
+        <Button text="Exit Game" onAction="#handleExit"
+                styleClass="btn-8bit, btn-ghost"/>
     </VBox>
-</AnchorPane>
+    
+    <!-- Top Buttons (on top layer) -->
+    <Button text="←" onAction="#handleHomeButton"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.leftAnchor="15.0"/>
 
+    <Button fx:id="muteButton" text="🔊" onAction="#handleMute"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.rightAnchor="15.0"/>
+</AnchorPane>

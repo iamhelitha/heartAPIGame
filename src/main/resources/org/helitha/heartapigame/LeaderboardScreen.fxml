@@ -10,37 +10,39 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.helitha.heartapigame.controllers.LeaderboardScreenController"
-            styleClass="main-background"
-            stylesheets="@css/global-styles.css">
+            styleClass="main-background">
 
-    <!-- Home Button -->
-            styleClass="btn-home"
-            prefWidth="80" prefHeight="35"
-            AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
-
-    <!-- Main Content -->
+    <!-- Main Content (behind buttons) -->
     <VBox alignment="CENTER" spacing="20.0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
         <padding>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0"/>
+            <Insets bottom="30.0" left="30.0" right="30.0" top="80.0"/>
         </padding>
 
-        <Label text="🏆 Leaderboard 🏆" styleClass="title-medium"/>
+        <Label text="🏆 Leaderboard 🏆" styleClass="game-title"/>
 
-    <Label fx:id="finalScoreLabel" text="Your Score: 0"
-           styleClass="subtitle-large, label-success"/>
+        <Label fx:id="finalScoreLabel" text="Your Score: 0"
+               styleClass="subtitle"/>
 
-    <!-- TableView for Top Scores -->
-    <TableView fx:id="leaderboardTable" prefHeight="400" prefWidth="600">
-        <columns>
-            <TableColumn fx:id="rankColumn" text="Rank" prefWidth="100" />
-            <TableColumn fx:id="nameColumn" text="Name" prefWidth="300" />
-            <TableColumn fx:id="scoreColumn" text="Score" prefWidth="200" />
-        </columns>
-    </TableView>
+        <!-- TableView for Top Scores -->
+        <TableView fx:id="leaderboardTable" prefHeight="400" prefWidth="600">
+            <columns>
+                <TableColumn fx:id="rankColumn" text="Rank" prefWidth="100" />
+                <TableColumn fx:id="nameColumn" text="Name" prefWidth="300" />
+                <TableColumn fx:id="scoreColumn" text="Score" prefWidth="200" />
+            </columns>
+        </TableView>
 
-    <Button text="Back to Home" onAction="#handleBackToHome"
-            styleClass="btn-secondary, btn-normal"/>
+        <Button text="Back to Home" onAction="#handleBackToHome"
+                styleClass="btn-8bit, btn-ghost"/>
     </VBox>
-</AnchorPane>
+    
+    <!-- Top Buttons (on top layer) -->
+    <Button text="←" onAction="#handleHomeButton"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.leftAnchor="15.0"/>
 
+    <Button fx:id="muteButton" text="🔊" onAction="#handleMute"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.rightAnchor="15.0"/>
+</AnchorPane>

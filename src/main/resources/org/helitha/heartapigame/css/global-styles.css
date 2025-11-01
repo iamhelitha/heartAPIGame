@@ -1,311 +1,294 @@
 /* ===================================
-   Heart API Game - Global Stylesheet
+   Heart API Game - Nostalgic 8-Bit Retro Stylesheet
+   Window Size: 800x600
    =================================== */
 
 /* Custom Font Loading */
-@font-face {
-    font-family: 'CustomFont';
-    src: url('../fonts/PressStart2P-Regular.ttf');
-}
+/* Font is loaded programmatically in Main.java */
+/* Use 'Press Start 2P' as the font-family name in CSS */
 
-/* Apply custom font to root - Uncomment to use globally */
-/*
+/* Root variables - Muted Brown Retro Palette */
 .root {
-    -fx-font-family: 'CustomFont', 'System', sans-serif;
-}
-*/
-
-/* Root Variables for Theme Colors */
-.root {
-    -fx-primary-color: #4CAF50;
-    -fx-secondary-color: #2196F3;
-    -fx-warning-color: #FF9800;
-    -fx-danger-color: #f44336;
-    -fx-gray-color: #9E9E9E;
-    -fx-background-light: #f5f5f5;
-    -fx-text-dark: #333333;
-    -fx-text-medium: #555555;
-    -fx-text-light: #666666;
-    -fx-border-color: #dddddd;
+    -fx-font-family: 'Press Start 2P', monospace, sans-serif;
+    
+    /* Nostalgic brown/beige palette */
+    -fx-bg-primary: #9b8774;      /* Warm brown background */
+    -fx-bg-secondary: #d4c4b0;    /* Light beige for containers */
+    -fx-bg-dark: #5a4a3a;         /* Dark brown for depth */
+    
+    -fx-pixel-black: #2b1f16;     /* Dark brown (almost black) */
+    -fx-pixel-white: #f5f0e8;     /* Off-white (cream) */
+    -fx-shadow-color: #3d2f23;    /* Brown shadow for depth */
+    
+    /* Muted button colors - 8-bit style */
+    -fx-btn-primary: #c17c5c;     /* Terracotta */
+    -fx-btn-secondary: #7a9ba5;   /* Muted blue-gray */
+    -fx-btn-success: #8fa885;     /* Sage green */
+    -fx-btn-danger: #b57373;      /* Dusty rose */
+    
+    /* UI colors */
+    -fx-text-primary: #f5f0e8;    /* Cream text */
+    -fx-text-secondary: #d4c4b0;  /* Light beige text */
+    -fx-text-title: #e8d4a8;      /* Golden beige (titles) */
+    -fx-heart-red: #c75450;       /* Muted red for hearts */
 }
 
 /* ===================================
-   General Background Styles
+   Background Styles - Nostalgic Brown Theme
    =================================== */
 .main-background {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: -fx-bg-primary;
+}
+
+.auth-background {
+    -fx-background-color: -fx-bg-primary;
+}
+
+.game-world {
+    -fx-background-color: -fx-bg-primary;
+    -fx-border-color: -fx-bg-dark;
+    -fx-border-width: 0 0 8px 0;
+    -fx-border-style: solid;
 }
 
 /* ===================================
-   Typography Styles
+   Typography - Nostalgic 8-Bit Style
+   Optimized for 800x600 window
    =================================== */
-.title-large {
-    -fx-font-size: 36px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #333333;
-}
-
-.title-medium {
-    -fx-font-size: 32px;
-    -fx-font-weight: bold;
-}
-
-.title-small {
+.game-title {
     -fx-font-size: 28px;
-    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-title;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 2, 2);
+}
+
+.title-large {
+    -fx-font-size: 20px;
+    -fx-text-fill: -fx-text-title;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 2, 2);
 }
 
 .subtitle {
-    -fx-font-size: 20px;
-    -fx-text-fill: #666666;
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-text-primary;
 }
 
-.subtitle-large {
-    -fx-font-size: 18px;
+.form-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: -fx-text-primary;
 }
 
 .text-regular {
-    -fx-font-size: 16px;
+    -fx-font-size: 11px;
+    -fx-text-fill: -fx-text-primary;
 }
 
-.text-small {
-    -fx-font-size: 14px;
-}
-
-.text-tiny {
-    -fx-font-size: 12px;
-}
-
-.subtitle-muted {
-    -fx-font-size: 14px;
-    -fx-text-fill: #555555;
-    -fx-opacity: 0.9;
-}
-
-.subtitle-info {
-    -fx-font-size: 16px;
-    -fx-text-fill: #666666;
+.divider-text {
+    -fx-font-size: 11px;
+    -fx-text-fill: -fx-text-secondary;
 }
 
 /* ===================================
-   Card/Container Styles
+   UI Containers - 8-Bit with Depth
    =================================== */
-.auth-card {
-    -fx-background-color: white;
-    -fx-background-radius: 15;
-    -fx-padding: 30;
+.menu-container {
+    -fx-background-color: -fx-bg-secondary;
+    -fx-padding: 28px;
+    -fx-border-radius: 0;
+    -fx-border-color: -fx-pixel-black;
+    -fx-border-width: 4px;
+    -fx-border-style: solid;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 4, 4);
 }
 
-/* ===================================
-   Form Field Styles
-   =================================== */
-.form-label {
-    -fx-text-fill: #333333;
-    -fx-font-weight: bold;
-}
-
+/* Text Input Fields - 8-Bit Style */
 .text-field, .password-field {
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-border-color: #dddddd;
-    -fx-padding: 10;
+    -fx-font-family: 'Press Start 2P', monospace, sans-serif;
+    -fx-font-size: 11px;
+    -fx-background-color: -fx-bg-secondary;
+    -fx-text-fill: -fx-pixel-black;
+    -fx-border-color: -fx-pixel-black;
+    -fx-border-width: 3px;
+    -fx-border-radius: 0;
+    -fx-border-style: solid;
+    -fx-padding: 10px;
+    -fx-prompt-text-fill: #6b5d52;
+    -fx-effect: innershadow(gaussian, -fx-shadow-color, 4, 0, 0, 2);
 }
 
 .text-field:focused, .password-field:focused {
-    -fx-border-color: #2196F3;
+    -fx-border-color: -fx-btn-primary;
+    -fx-border-width: 3px;
+    -fx-background-color: -fx-pixel-white;
 }
 
 /* ===================================
-   Button Styles
+   8-Bit Button Styles - Classic with Drop Shadow Depth
+   Optimized for 800x600 display
    =================================== */
-.btn {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
+.btn-8bit {
+    -fx-font-family: 'Press Start 2P', monospace, sans-serif;
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-pixel-white;
+    -fx-padding: 14px 20px;
+    
+    /* Single solid border */
+    -fx-border-color: -fx-pixel-black;
+    -fx-border-width: 3px;
+    -fx-border-style: solid;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    
+    /* Prevents double borders */
+    -fx-background-insets: 0;
+    
+    /* 8-bit drop shadow for depth */
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 4, 4);
+    
     -fx-cursor: hand;
 }
 
-.btn-primary {
-    -fx-background-color: #4CAF50;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
+/* Hover state - brighten slightly */
+.btn-8bit:hover {
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 5, 5);
 }
 
-.btn-primary:hover {
-    -fx-background-color: #45a049;
+/* Pressed state - push down with shadow */
+.btn-8bit:pressed {
+    -fx-translate-y: 3px;
+    -fx-translate-x: 3px;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 1, 1);
 }
 
-.btn-secondary {
-    -fx-background-color: #2196F3;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
+/* Button Color Variants - Muted Palette */
+.btn-start {
+    -fx-background-color: -fx-btn-primary;
 }
 
-.btn-secondary:hover {
-    -fx-background-color: #1976D2;
+.btn-options {
+    -fx-background-color: -fx-btn-secondary;
 }
 
-.btn-warning {
-    -fx-background-color: #FF9800;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
+.btn-credits {
+    -fx-background-color: -fx-btn-success;
+    -fx-text-fill: -fx-pixel-black;
 }
 
-.btn-warning:hover {
-    -fx-background-color: #F57C00;
-}
-
-.btn-danger {
-    -fx-background-color: #f44336;
-    -fx-text-fill: white;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
-}
-
-.btn-danger:hover {
-    -fx-background-color: #d32f2f;
-}
-
-.btn-gray {
-    -fx-background-color: #9E9E9E;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
-}
-
-.btn-gray:hover {
-    -fx-background-color: #757575;
-}
-
+/* Ghost button - outline style with subtle background */
 .btn-ghost {
-    -fx-background-color: white;
-    -fx-text-fill: #2196F3;
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-border-color: #2196F3;
-    -fx-border-radius: 8;
-    -fx-cursor: hand;
+    -fx-background-color: rgba(90, 74, 58, 0.3);
+    -fx-text-fill: -fx-text-primary;
+    -fx-border-color: -fx-pixel-black;
+    -fx-border-width: 3px;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 3, 3);
 }
 
 .btn-ghost:hover {
-    -fx-background-color: #E3F2FD;
+    -fx-background-color: rgba(90, 74, 58, 0.5);
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 4, 4);
 }
 
-/* Specific Button Sizes */
-.btn-large {
-    -fx-font-size: 18px;
-    -fx-pref-width: 300;
-    -fx-pref-height: 60;
-}
-
-.btn-medium {
-    -fx-font-size: 16px;
-    -fx-pref-width: 250;
-    -fx-pref-height: 50;
-}
-
-.btn-normal {
-    -fx-font-size: 16px;
-    -fx-pref-width: 200;
-    -fx-pref-height: 50;
-}
-
-.btn-small {
-    -fx-font-size: 14px;
-    -fx-pref-width: 150;
-    -fx-pref-height: 40;
-}
-
-.btn-tiny {
-    -fx-font-size: 14px;
-    -fx-pref-width: 80;
-    -fx-pref-height: 35;
-}
-
-.btn-answer {
-    -fx-background-color: #2196F3;
-    -fx-text-fill: white;
-    -fx-font-size: 18px;
-    -fx-pref-width: 120;
-    -fx-pref-height: 60;
-}
-
-.btn-home {
-    -fx-background-color: #2196F3;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-pref-width: 80;
-    -fx-pref-height: 35;
+.btn-ghost:pressed {
+    -fx-background-color: rgba(90, 74, 58, 0.6);
+    -fx-translate-y: 2px;
+    -fx-translate-x: 2px;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 1, 1);
 }
 
 /* ===================================
-   Link Styles
+   Game Elements - Progress Bar (8-Bit Style)
+   =================================== */
+.progress-bar {
+    -fx-accent: -fx-text-title;
+    -fx-background-color: -fx-pixel-black;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: -fx-text-secondary;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+    -fx-padding: 2px;
+}
+
+.progress-bar .bar {
+    -fx-background-color: -fx-text-title;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.progress-bar .track {
+    -fx-background-color: -fx-pixel-black;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+/* ===================================
+   Table View - 8-Bit Leaderboard Style
+   =================================== */
+.table-view {
+    -fx-background-color: -fx-bg-secondary;
+    -fx-font-family: 'Press Start 2P', monospace, sans-serif;
+    -fx-border-color: -fx-pixel-black;
+    -fx-border-width: 4px;
+    -fx-border-style: solid;
+    -fx-effect: dropshadow(one-pass-box, -fx-shadow-color, 0, 0, 3, 3);
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -fx-bg-dark;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: -fx-bg-dark;
+    -fx-border-color: -fx-pixel-black;
+    -fx-border-width: 0 0 3px 0;
+    -fx-border-style: solid;
+}
+
+.table-view .column-header .label {
+    -fx-font-family: 'Press Start 2P', monospace, sans-serif;
+    -fx-text-fill: -fx-text-title;
+    -fx-font-size: 10px;
+}
+
+.table-view .table-cell {
+    -fx-font-family: 'Press Start 2P', monospace, sans-serif;
+    -fx-border-color: -fx-pixel-black;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-style: solid;
+    -fx-text-fill: -fx-pixel-black;
+    -fx-font-size: 10px;
+    -fx-padding: 10px;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: -fx-bg-secondary;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: derive(-fx-bg-secondary, -8%);
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: -fx-btn-primary;
+}
+
+/* ===================================
+   Hyperlinks - 8-Bit Style
    =================================== */
 .hyperlink {
-    -fx-font-size: 12px;
+    -fx-font-family: 'Press Start 2P', monospace, sans-serif;
+    -fx-font-size: 10px;
+    -fx-text-fill: -fx-text-title;
+    -fx-underline: false;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-padding: 6px 0;
 }
 
-/* ===================================
-   Label Color Variants
-   =================================== */
-.label-success {
-    -fx-text-fill: #4CAF50;
-    -fx-font-weight: bold;
+.hyperlink:visited {
+    -fx-text-fill: -fx-text-title;
 }
 
-.label-danger {
-    -fx-text-fill: #f44336;
-    -fx-font-weight: bold;
+.hyperlink:hover {
+    -fx-text-fill: -fx-pixel-white;
 }
-
-.label-info {
-    -fx-text-fill: #666666;
-    -fx-font-weight: bold;
-}
-
-/* Specific Label Styles for Game Screen */
-.score-label {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #4CAF50;
-}
-
-.time-label {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #f44336;
-}
-
-.question-label {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-}
-
-/* ===================================
-   Image Styles
-   =================================== */
-.game-image {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
-}
-
-/* ===================================
-   Divider Styles
-   =================================== */
-.divider-text {
-    -fx-text-fill: #666666;
-    -fx-font-weight: bold;
-}
-

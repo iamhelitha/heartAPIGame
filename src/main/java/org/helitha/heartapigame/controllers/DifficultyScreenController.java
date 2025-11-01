@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import org.helitha.heartapigame.managers.GameManager;
 import org.helitha.heartapigame.managers.ScreenManager;
+import org.helitha.heartapigame.managers.SoundManager;
 
 public class DifficultyScreenController {
 
@@ -23,13 +24,30 @@ public class DifficultyScreenController {
     private Button backButton;
 
     @FXML
+    private Button muteButton;
+
+    @FXML
     public void initialize() {
         // Initialize controller
         System.out.println("Difficulty screen loaded");
+        updateMuteButton();
+    }
+
+    private void updateMuteButton() {
+        if (muteButton != null) {
+            muteButton.setText(SoundManager.getInstance().isMuted() ? "🔇" : "🔊");
+        }
+    }
+
+    @FXML
+    private void handleMute() {
+        SoundManager.getInstance().toggleMute();
+        updateMuteButton();
     }
 
     @FXML
     private void handleEasy() {
+        SoundManager.getInstance().playClickSound();
         System.out.println("Easy difficulty selected");
         GameManager.getInstance().setDifficulty(GameManager.EASY);
         GameManager.getInstance().resetGame();
@@ -40,6 +58,7 @@ public class DifficultyScreenController {
 
     @FXML
     private void handleMedium() {
+        SoundManager.getInstance().playClickSound();
         System.out.println("Medium difficulty selected");
         GameManager.getInstance().setDifficulty(GameManager.MEDIUM);
         GameManager.getInstance().resetGame();
@@ -50,6 +69,7 @@ public class DifficultyScreenController {
 
     @FXML
     private void handleHard() {
+        SoundManager.getInstance().playClickSound();
         System.out.println("Hard difficulty selected");
         GameManager.getInstance().setDifficulty(GameManager.HARD);
         GameManager.getInstance().resetGame();
@@ -60,13 +80,14 @@ public class DifficultyScreenController {
 
     @FXML
     private void handleBack() {
+        SoundManager.getInstance().playClickSound();
         // Return to home screen
         ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }
 
     @FXML
     private void handleHomeButton(ActionEvent event) {
-        ScreenManager sm = new ScreenManager((Stage) ((Node) event.getSource()).getScene().getWindow());
-        sm.switchScene("HomeScreen.fxml");
+        SoundManager.getInstance().playClickSound();
+        ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }
 }

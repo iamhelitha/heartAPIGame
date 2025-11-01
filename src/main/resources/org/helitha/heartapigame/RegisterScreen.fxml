@@ -7,69 +7,54 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.AnchorPane?>
 
-<VBox alignment="CENTER"
-      spacing="20.0"
-      fillWidth="false"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.helitha.heartapigame.controllers.RegisterScreenController"
-      styleClass="main-background"
-      stylesheets="@css/global-styles.css">
-    <padding>
-        <Insets top="40.0" right="40.0" bottom="40.0" left="40.0"/>
-    </padding>
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.helitha.heartapigame.controllers.RegisterScreenController"
+            styleClass="auth-background">
 
-    <!-- Title -->
-    <Label text="❤ Create Account ❤" styleClass="title-large"/>
+    <!-- Main Content -->
+    <VBox alignment="CENTER" spacing="25.0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <padding>
+            <Insets top="50.0" right="40.0" bottom="40.0" left="40.0"/>
+        </padding>
 
-    <Label text="Welcome! Please fill the details below"
-           styleClass="subtitle-muted"/>
+        <!-- Title -->
+        <Label text="❤ Create Account ❤" styleClass="game-title"/>
 
-    <!-- Auth Card -->
-    <VBox spacing="15.0"
-          alignment="CENTER"
-          prefWidth="360"
-          maxWidth="360"
-          styleClass="auth-card">
-        <VBox.margin>
-            <Insets top="20"/>
-        </VBox.margin>
+        <Label text="Join the Adventure!" styleClass="title-large"/>
 
-        <!-- Display Name Field -->
-        <VBox spacing="5.0" alignment="CENTER_LEFT" prefWidth="320" maxWidth="320">
-            <Label text="Display Name" styleClass="form-label"/>
-            <TextField fx:id="displayNameField"
-                       promptText="Enter your display name"
-                       prefWidth="320"
-                       styleClass="text-field"/>
-        </VBox>
-
-        <!-- Email Field -->
-        <VBox spacing="5.0" alignment="CENTER_LEFT" prefWidth="320" maxWidth="320">
-            <Label text="Email Address" styleClass="form-label"/>
-            <TextField fx:id="emailField"
-                       promptText="Enter your email"
-                       prefWidth="320"
-                       styleClass="text-field"/>
-        </VBox>
-
-        <!-- Password Field -->
-        <VBox spacing="5.0" alignment="CENTER_LEFT" prefWidth="320" maxWidth="320">
-            <Label text="Password" styleClass="form-label"/>
-            <PasswordField fx:id="passwordField"
-                           promptText="Enter your password"
-                           prefWidth="320"
-                           styleClass="password-field"/>
+        <!-- Form Container -->
+        <VBox spacing="18.0" alignment="CENTER" maxWidth="400" styleClass="menu-container">
+            <padding>
+                <Insets top="25.0" right="30.0" bottom="25.0" left="30.0"/>
+            </padding>
+            
+            <Label text="Choose your display name" styleClass="form-label"/>
+            <TextField fx:id="displayNameField" promptText="Display Name" prefWidth="340"/>
+            
+            <Label text="Enter your email" styleClass="form-label">
+                <VBox.margin>
+                    <Insets top="8"/>
+                </VBox.margin>
+            </Label>
+            <TextField fx:id="emailField" promptText="Email" prefWidth="340"/>
+            
+            <Label text="Choose a password" styleClass="form-label">
+                <VBox.margin>
+                    <Insets top="8"/>
+                </VBox.margin>
+            </Label>
+            <PasswordField fx:id="passwordField" promptText="Password" prefWidth="340"/>
         </VBox>
 
         <!-- Register Button -->
         <Button fx:id="registerButton"
-                text="Register"
+                text="Create Account"
                 onAction="#handleRegister"
-                prefWidth="320"
-                prefHeight="45"
-                styleClass="btn-primary">
+                styleClass="btn-8bit, btn-start"
+                prefWidth="300">
             <VBox.margin>
                 <Insets top="10"/>
             </VBox.margin>
@@ -79,11 +64,15 @@
         <Hyperlink fx:id="loginLink"
                    text="Already have an account? Login"
                    onAction="#handleBackToLogin"
-                   alignment="CENTER"
-                   styleClass="hyperlink">
+                   alignment="CENTER">
             <VBox.margin>
-                <Insets top="5"/>
+                <Insets top="8"/>
             </VBox.margin>
         </Hyperlink>
     </VBox>
-</VBox>
+    
+    <!-- Mute Button (on top layer) -->
+    <Button fx:id="muteButton" text="🔊" onAction="#handleMute"
+            styleClass="btn-8bit, btn-ghost" prefWidth="60"
+            AnchorPane.topAnchor="15.0" AnchorPane.rightAnchor="15.0"/>
+</AnchorPane>

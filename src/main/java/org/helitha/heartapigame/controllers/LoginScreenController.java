@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import org.helitha.heartapigame.services.FirebaseService;
 import org.helitha.heartapigame.managers.GameSession;
 import org.helitha.heartapigame.managers.ScreenManager;
+import org.helitha.heartapigame.managers.SoundManager;
 
 public class LoginScreenController {
 
@@ -28,12 +29,33 @@ public class LoginScreenController {
     private Button guestButton;
 
     @FXML
+    private Button muteButton;
+
+    @FXML
     public void initialize() {
-        // Initialize controller
+        // Start background music
+        SoundManager.getInstance().playBackgroundMusic();
+        
+        // Update mute button text based on current state
+        updateMuteButton();
+    }
+    
+    @FXML
+    private void handleMute() {
+        SoundManager.getInstance().playClickSound();
+        SoundManager.getInstance().toggleMute();
+        updateMuteButton();
+    }
+    
+    private void updateMuteButton() {
+        if (muteButton != null) {
+            muteButton.setText(SoundManager.getInstance().isMusicEnabled() ? "🔊" : "🔇");
+        }
     }
 
     @FXML
     private void handleLogin() {
+        SoundManager.getInstance().playClickSound();
         String email = emailField.getText();
         String password = passwordField.getText();
 
@@ -64,12 +86,14 @@ public class LoginScreenController {
 
     @FXML
     private void handleRegister() {
+        SoundManager.getInstance().playClickSound();
         // Switch to registration screen
         ScreenManager.getInstance().switchScene("RegisterScreen.fxml");
     }
 
     @FXML
     private void handlePlayAsGuest() {
+        SoundManager.getInstance().playClickSound();
         // Create guest user in GameSession
         GameSession.getInstance().createGuestUser();
 
