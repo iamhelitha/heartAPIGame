@@ -8,11 +8,11 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.helitha.heartapigame.controllers.CreditsScreenController"
-            style="-fx-background-color: #f5f5f5;">
+            styleClass="main-background"
+            stylesheets="@css/global-styles.css">
 
     <!-- Home Button -->
-    <Button text="Home" onAction="#handleHomeButton"
-            style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px;"
+            styleClass="btn-home"
             prefWidth="80" prefHeight="35"
             AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
 
@@ -23,21 +23,20 @@
             <Insets bottom="40.0" left="40.0" right="40.0" top="40.0"/>
         </padding>
 
-        <Label text="Credits" style="-fx-font-size: 36px; -fx-font-weight: bold;"/>
+        <Label text="Credits" styleClass="title-large"/>
 
-        <Label text="Heart API Game" style="-fx-font-size: 20px; -fx-text-fill: #666666;"/>
+        <Label text="Heart API Game" styleClass="subtitle"/>
 
         <VBox spacing="10.0" alignment="CENTER">
-            <Label text="Developed by: Helitha Guruge" style="-fx-font-size: 16px;"/>
-            <Label text="Framework: JavaFX" style="-fx-font-size: 16px;"/>
-            <Label text="Backend: Firebase" style="-fx-font-size: 16px;"/>
-            <Label text="API: Heart Game API" style="-fx-font-size: 16px;"/>
+            <Label text="Developed by: Helitha Guruge" styleClass="text-regular"/>
+            <Label text="Framework: JavaFX" styleClass="text-regular"/>
+            <Label text="Backend: Firebase" styleClass="text-regular"/>
+            <Label text="API: Heart Game API" styleClass="text-regular"/>
         </VBox>
 
-        <Label text="Thank you for playing!" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+        <Label text="Thank you for playing!" styleClass="subtitle-large, label-success"/>
 
         <Button text="Back" onAction="#handleBack"
-                style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-font-size: 14px;"
-                prefWidth="150" prefHeight="40"/>
+                styleClass="btn-gray, btn-small"/>
     </VBox>
 </AnchorPane>

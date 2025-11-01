@@ -11,11 +11,11 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.helitha.heartapigame.controllers.PlayScreenController"
-            style="-fx-background-color: #f5f5f5;">
+            styleClass="main-background"
+            stylesheets="@css/global-styles.css">
 
     <!-- Home Button -->
-    <Button text="Home" onAction="#handleHomeButton"
-            style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px;"
+            styleClass="btn-home"
             prefWidth="80" prefHeight="35"
             AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
 
@@ -29,42 +29,41 @@
         <!-- Score and Timer -->
     <HBox spacing="40.0" alignment="CENTER">
         <Label fx:id="scoreLabel" text="Score: 0"
-               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;"/>
+               styleClass="score-label"/>
         <Label fx:id="timeLabel" text="Time: 45"
-               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #f44336;"/>
+               styleClass="time-label"/>
     </HBox>
 
     <!-- Question Label -->
     <Label fx:id="questionLabel" text="How many HEARTS?"
-           style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+           styleClass="question-label"/>
 
     <!-- Image View -->
     <ImageView fx:id="imageView" fitHeight="300" fitWidth="400" preserveRatio="true"
-               style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);"/>
+               styleClass="game-image"/>
 
     <!-- Answer Buttons Grid -->
     <GridPane hgap="15" vgap="15" alignment="CENTER">
         <Button fx:id="button1" text="0" onAction="#handleAnswer1"
-                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 18px;"
-                prefWidth="120" prefHeight="60" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                styleClass="btn-answer"
+                GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 
         <Button fx:id="button2" text="1" onAction="#handleAnswer2"
-                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 18px;"
-                prefWidth="120" prefHeight="60" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                styleClass="btn-answer"
+                GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 
         <Button fx:id="button3" text="2" onAction="#handleAnswer3"
-                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 18px;"
-                prefWidth="120" prefHeight="60" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                styleClass="btn-answer"
+                GridPane.columnIndex="0" GridPane.rowIndex="1"/>
 
         <Button fx:id="button4" text="3" onAction="#handleAnswer4"
-                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 18px;"
-                prefWidth="120" prefHeight="60" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                styleClass="btn-answer"
+                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     </GridPane>
 
     <!-- Exit Button -->
     <Button text="Exit Game" onAction="#handleExit"
-            style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-font-size: 14px;"
-            prefWidth="150" prefHeight="35"/>
+            styleClass="btn-gray, btn-small"/>
     </VBox>
 </AnchorPane>
 

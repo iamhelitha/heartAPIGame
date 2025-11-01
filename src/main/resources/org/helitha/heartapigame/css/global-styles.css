@@ -1,0 +1,311 @@
+/* ===================================
+   Heart API Game - Global Stylesheet
+   =================================== */
+
+/* Custom Font Loading */
+@font-face {
+    font-family: 'CustomFont';
+    src: url('../fonts/PressStart2P-Regular.ttf');
+}
+
+/* Apply custom font to root - Uncomment to use globally */
+/*
+.root {
+    -fx-font-family: 'CustomFont', 'System', sans-serif;
+}
+*/
+
+/* Root Variables for Theme Colors */
+.root {
+    -fx-primary-color: #4CAF50;
+    -fx-secondary-color: #2196F3;
+    -fx-warning-color: #FF9800;
+    -fx-danger-color: #f44336;
+    -fx-gray-color: #9E9E9E;
+    -fx-background-light: #f5f5f5;
+    -fx-text-dark: #333333;
+    -fx-text-medium: #555555;
+    -fx-text-light: #666666;
+    -fx-border-color: #dddddd;
+}
+
+/* ===================================
+   General Background Styles
+   =================================== */
+.main-background {
+    -fx-background-color: #f5f5f5;
+}
+
+/* ===================================
+   Typography Styles
+   =================================== */
+.title-large {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.title-medium {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+.title-small {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.subtitle {
+    -fx-font-size: 20px;
+    -fx-text-fill: #666666;
+}
+
+.subtitle-large {
+    -fx-font-size: 18px;
+}
+
+.text-regular {
+    -fx-font-size: 16px;
+}
+
+.text-small {
+    -fx-font-size: 14px;
+}
+
+.text-tiny {
+    -fx-font-size: 12px;
+}
+
+.subtitle-muted {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+    -fx-opacity: 0.9;
+}
+
+.subtitle-info {
+    -fx-font-size: 16px;
+    -fx-text-fill: #666666;
+}
+
+/* ===================================
+   Card/Container Styles
+   =================================== */
+.auth-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 30;
+}
+
+/* ===================================
+   Form Field Styles
+   =================================== */
+.form-label {
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+}
+
+.text-field, .password-field {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dddddd;
+    -fx-padding: 10;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #2196F3;
+}
+
+/* ===================================
+   Button Styles
+   =================================== */
+.btn {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-primary {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #45a049;
+}
+
+.btn-secondary {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #1976D2;
+}
+
+.btn-warning {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-warning:hover {
+    -fx-background-color: #F57C00;
+}
+
+.btn-danger {
+    -fx-background-color: #f44336;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #d32f2f;
+}
+
+.btn-gray {
+    -fx-background-color: #9E9E9E;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-gray:hover {
+    -fx-background-color: #757575;
+}
+
+.btn-ghost {
+    -fx-background-color: white;
+    -fx-text-fill: #2196F3;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-color: #2196F3;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+
+.btn-ghost:hover {
+    -fx-background-color: #E3F2FD;
+}
+
+/* Specific Button Sizes */
+.btn-large {
+    -fx-font-size: 18px;
+    -fx-pref-width: 300;
+    -fx-pref-height: 60;
+}
+
+.btn-medium {
+    -fx-font-size: 16px;
+    -fx-pref-width: 250;
+    -fx-pref-height: 50;
+}
+
+.btn-normal {
+    -fx-font-size: 16px;
+    -fx-pref-width: 200;
+    -fx-pref-height: 50;
+}
+
+.btn-small {
+    -fx-font-size: 14px;
+    -fx-pref-width: 150;
+    -fx-pref-height: 40;
+}
+
+.btn-tiny {
+    -fx-font-size: 14px;
+    -fx-pref-width: 80;
+    -fx-pref-height: 35;
+}
+
+.btn-answer {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-pref-width: 120;
+    -fx-pref-height: 60;
+}
+
+.btn-home {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-pref-width: 80;
+    -fx-pref-height: 35;
+}
+
+/* ===================================
+   Link Styles
+   =================================== */
+.hyperlink {
+    -fx-font-size: 12px;
+}
+
+/* ===================================
+   Label Color Variants
+   =================================== */
+.label-success {
+    -fx-text-fill: #4CAF50;
+    -fx-font-weight: bold;
+}
+
+.label-danger {
+    -fx-text-fill: #f44336;
+    -fx-font-weight: bold;
+}
+
+.label-info {
+    -fx-text-fill: #666666;
+    -fx-font-weight: bold;
+}
+
+/* Specific Label Styles for Game Screen */
+.score-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4CAF50;
+}
+
+.time-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #f44336;
+}
+
+.question-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+/* ===================================
+   Image Styles
+   =================================== */
+.game-image {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+/* ===================================
+   Divider Styles
+   =================================== */
+.divider-text {
+    -fx-text-fill: #666666;
+    -fx-font-weight: bold;
+}
+

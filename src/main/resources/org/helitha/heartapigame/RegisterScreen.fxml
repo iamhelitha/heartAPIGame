@@ -14,61 +14,53 @@
       fillWidth="false"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="org.helitha.heartapigame.controllers.RegisterScreenController"
-      style="-fx-background-color: #f5f5f5;">
+      styleClass="main-background"
+      stylesheets="@css/global-styles.css">
     <padding>
         <Insets top="40.0" right="40.0" bottom="40.0" left="40.0"/>
     </padding>
 
     <!-- Title -->
-    <Label text="❤ Create Account ❤" textFill="#333333">
-        <font>
-            <Font name="System Bold" size="36"/>
-        </font>
-    </Label>
+    <Label text="❤ Create Account ❤" styleClass="title-large"/>
 
     <Label text="Welcome! Please fill the details below"
-           textFill="#555555"
-           style="-fx-opacity: 0.9;">
-        <font>
-            <Font size="14"/>
-        </font>
-    </Label>
+           styleClass="subtitle-muted"/>
 
     <!-- Auth Card -->
     <VBox spacing="15.0"
           alignment="CENTER"
           prefWidth="360"
           maxWidth="360"
-          style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 30;">
+          styleClass="auth-card">
         <VBox.margin>
             <Insets top="20"/>
         </VBox.margin>
 
         <!-- Display Name Field -->
         <VBox spacing="5.0" alignment="CENTER_LEFT" prefWidth="320" maxWidth="320">
-            <Label text="Display Name" style="-fx-text-fill: #333333; -fx-font-weight: bold;"/>
+            <Label text="Display Name" styleClass="form-label"/>
             <TextField fx:id="displayNameField"
                        promptText="Enter your display name"
                        prefWidth="320"
-                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #dddddd; -fx-padding: 10;"/>
+                       styleClass="text-field"/>
         </VBox>
 
         <!-- Email Field -->
         <VBox spacing="5.0" alignment="CENTER_LEFT" prefWidth="320" maxWidth="320">
-            <Label text="Email Address" style="-fx-text-fill: #333333; -fx-font-weight: bold;"/>
+            <Label text="Email Address" styleClass="form-label"/>
             <TextField fx:id="emailField"
                        promptText="Enter your email"
                        prefWidth="320"
-                       style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #dddddd; -fx-padding: 10;"/>
+                       styleClass="text-field"/>
         </VBox>
 
         <!-- Password Field -->
         <VBox spacing="5.0" alignment="CENTER_LEFT" prefWidth="320" maxWidth="320">
-            <Label text="Password" style="-fx-text-fill: #333333; -fx-font-weight: bold;"/>
+            <Label text="Password" styleClass="form-label"/>
             <PasswordField fx:id="passwordField"
                            promptText="Enter your password"
                            prefWidth="320"
-                           style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #dddddd; -fx-padding: 10;"/>
+                           styleClass="password-field"/>
         </VBox>
 
         <!-- Register Button -->
@@ -77,7 +69,7 @@
                 onAction="#handleRegister"
                 prefWidth="320"
                 prefHeight="45"
-                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;">
+                styleClass="btn-primary">
             <VBox.margin>
                 <Insets top="10"/>
             </VBox.margin>
@@ -88,7 +80,7 @@
                    text="Already have an account? Login"
                    onAction="#handleBackToLogin"
                    alignment="CENTER"
-                   style="-fx-font-size: 12px;">
+                   styleClass="hyperlink">
             <VBox.margin>
                 <Insets top="5"/>
             </VBox.margin>
