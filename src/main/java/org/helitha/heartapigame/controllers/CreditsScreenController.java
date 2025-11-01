@@ -2,9 +2,7 @@ package org.helitha.heartapigame.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.stage.Stage;
 import org.helitha.heartapigame.managers.ScreenManager;
 import org.helitha.heartapigame.managers.SoundManager;
 
