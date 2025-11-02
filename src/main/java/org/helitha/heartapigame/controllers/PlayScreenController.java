@@ -110,8 +110,9 @@ public class PlayScreenController {
         System.out.println("Points per correct answer: " + GameManager.getInstance().getPointsForDifficulty());
         System.out.println("==================================");
 
-        // Start countdown timer (EVENT-DRIVEN: Time-based events)
-        startCountdownTimer();
+        // Initialize countdown timer (EVENT-DRIVEN: Time-based events)
+        // Timer will start when first image is loaded
+        initializeCountdownTimer();
 
         // Load first round
         loadNewRound();
@@ -139,9 +140,9 @@ public class PlayScreenController {
     }
 
     /**
-     * EVENT-DRIVEN: Timeline fires an event every second
+     * EVENT-DRIVEN: Initialize the countdown timer (but don't start it yet)
      */
-    private void startCountdownTimer() {
+    private void initializeCountdownTimer() {
         countdown = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             timeRemaining--;
             updateTimeLabel();
@@ -151,7 +152,24 @@ public class PlayScreenController {
             }
         }));
         countdown.setCycleCount(Timeline.INDEFINITE);
-        countdown.play();
+    }
+
+    /**
+     * Start or resume the countdown timer
+     */
+    private void startCountdownTimer() {
+        if (countdown != null) {
+            countdown.play();
+        }
+    }
+
+    /**
+     * Pause the countdown timer
+     */
+    private void pauseCountdownTimer() {
+        if (countdown != null) {
+            countdown.pause();
+        }
     }
 
     private void updateTimeLabel() {
@@ -178,6 +196,9 @@ public class PlayScreenController {
     private void loadNewRound() {
         // Disable buttons while loading
         setButtonsEnabled(false);
+
+        // Pause timer while loading
+        pauseCountdownTimer();
 
         // Fetch data in background thread (EVENT-DRIVEN: Asynchronous event)
         new Thread(() -> {
@@ -214,8 +235,29 @@ public class PlayScreenController {
         try {
             Image image = new Image(gameData.question(), true); // true for background loading
             imageView.setImage(image);
+
+            // Add listener to start timer only when image is loaded
+            image.progressProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue.doubleValue() >= 1.0) {
+                    // Image fully loaded, start the timer
+                    System.out.println("Image loaded successfully, starting timer");
+                    startCountdownTimer();
+                }
+            });
+
+            // Handle image loading errors
+            image.errorProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue) {
+                    System.err.println("Error loading image from: " + gameData.question());
+                    // Start timer anyway to avoid blocking gameplay
+                    startCountdownTimer();
+                }
+            });
+
         } catch (Exception e) {
             System.err.println("Error loading image: " + e.getMessage());
+            // Start timer anyway to avoid blocking gameplay
+            startCountdownTimer();
         }
 
         // Randomly decide to ask for HEARTS or CARROTS
