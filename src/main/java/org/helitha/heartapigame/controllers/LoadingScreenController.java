@@ -25,19 +25,19 @@ public class LoadingScreenController implements Initializable {
                 // Total target duration ~1360ms (increased by 1 second)
                 updateMessage("Loading game logic...");
                 updateProgress(0, 100);
-                Thread.sleep(260);
+                Thread.sleep(160);
 
                 updateMessage("Initializing services...");
                 updateProgress(30, 100);
-                Thread.sleep(390);
+                Thread.sleep(290);
 
                 updateMessage("Loading assets...");
                 updateProgress(60, 100);
-                Thread.sleep(390);
+                Thread.sleep(290);
 
                 updateMessage("Finalizing setup...");
                 updateProgress(90, 100);
-                Thread.sleep(290);
+                Thread.sleep(190);
 
                 updateMessage("Done!");
                 updateProgress(100, 100);
