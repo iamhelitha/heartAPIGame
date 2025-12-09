@@ -29,36 +29,22 @@ public class HomeScreenController {
 
     @FXML
     public void initialize() {
-        // Display the current user's name
         String displayName = GameSession.getInstance().getDisplayName();
         if (displayName != null) {
             userNameLabel.setText("Welcome, " + displayName + "!");
         }
 
-        // Start background music using SoundManager
         SoundManager.getInstance().playBackgroundMusic();
+        SoundManager.getInstance().setupMuteButton(muteButton);
 
-        // Update mute button text
-        updateMuteButton();
-
-        // Add click sound effects to all buttons
         setupButtonSounds(playButton);
         setupButtonSounds(leaderboardButton);
         setupButtonSounds(creditsButton);
         setupButtonSounds(logoutButton);
     }
 
-    private void updateMuteButton() {
-        if (muteButton != null) {
-            muteButton.setText(SoundManager.getInstance().isMuted() ? "🔇" : "🔊");
-        }
-    }
-
     private void setupButtonSounds(Button button) {
-        // Play click sound when mouse is pressed
-        button.setOnMousePressed(event -> {
-            SoundManager.getInstance().playClickSound();
-        });
+        button.setOnMousePressed(event -> SoundManager.getInstance().playClickSound());
     }
 
     @FXML
@@ -88,21 +74,9 @@ public class HomeScreenController {
     @FXML
     private void handleLogout() {
         SoundManager.getInstance().playClickSound();
-
-        // Stop background music
         SoundManager.getInstance().stopBackgroundMusic();
-
-        // Clear the session
         GameSession.getInstance().clearSession();
         System.out.println("Logged out");
-
-        // Return to login screen
         ScreenManager.getInstance().switchScene("LoginScreen.fxml");
-    }
-
-    @FXML
-    private void handleMute() {
-        SoundManager.getInstance().toggleMute();
-        updateMuteButton();
     }
 }

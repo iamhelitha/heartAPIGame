@@ -1,6 +1,5 @@
 package org.helitha.heartapigame.controllers;
 
-import com.google.firebase.auth.UserRecord;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
@@ -10,7 +9,12 @@ import org.helitha.heartapigame.services.FirebaseService;
 import org.helitha.heartapigame.managers.ScreenManager;
 import org.helitha.heartapigame.managers.SoundManager;
 
+import java.util.regex.Pattern;
+
 public class RegisterScreenController {
+
+    private static final int MIN_PASSWORD_LENGTH = 6;
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
 
     @FXML
     private TextField displayNameField;
@@ -32,47 +36,41 @@ public class RegisterScreenController {
 
     @FXML
     public void initialize() {
-        // Start background music
         SoundManager.getInstance().playBackgroundMusic();
-        
-        // Update mute button text based on current state
-        updateMuteButton();
-    }
-    
-    @FXML
-    private void handleMute() {
-        SoundManager.getInstance().playClickSound();
-        SoundManager.getInstance().toggleMute();
-        updateMuteButton();
-    }
-    
-    private void updateMuteButton() {
-        if (muteButton != null) {
-            muteButton.setText(SoundManager.getInstance().isMusicEnabled() ? "🔊" : "🔇");
-        }
+        SoundManager.getInstance().setupMuteButton(muteButton);
     }
 
     @FXML
     private void handleRegister() {
         SoundManager.getInstance().playClickSound();
-        String displayName = displayNameField.getText();
-        String email = emailField.getText();
+        String displayName = displayNameField.getText().trim();
+        String email = emailField.getText().trim();
         String password = passwordField.getText();
 
-        // Validate input
+        // Validate all fields are filled
         if (displayName.isEmpty() || email.isEmpty() || password.isEmpty()) {
             System.out.println("Please fill in all fields");
             return;
         }
 
+        // Validate email format
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            System.out.println("Please enter a valid email address");
+            return;
+        }
+
+        // Validate password length (Firebase requires minimum 6 characters)
+        if (password.length() < MIN_PASSWORD_LENGTH) {
+            System.out.println("Password must be at least " + MIN_PASSWORD_LENGTH + " characters long");
+            return;
+        }
+
         // Call Firebase registration
-        UserRecord userRecord = FirebaseService.getInstance().registerUser(email, password, displayName);
+        var userRecord = FirebaseService.getInstance().registerUser(email, password, displayName);
 
         if (userRecord != null) {
             System.out.println("Registration successful! User ID: " + userRecord.getUid());
             System.out.println("Please login with your credentials.");
-
-            // Switch to login screen
             ScreenManager.getInstance().switchScene("LoginScreen.fxml");
         } else {
             System.out.println("Registration failed. Please try again.");

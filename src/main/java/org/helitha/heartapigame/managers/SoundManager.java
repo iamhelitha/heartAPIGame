@@ -1,5 +1,6 @@
 package org.helitha.heartapigame.managers;
 
+import javafx.scene.control.Button;
 import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -192,5 +193,27 @@ public class SoundManager {
     public boolean isMuted() {
         return !musicEnabled && !soundEffectsEnabled;
     }
-}
 
+    /**
+     * Setup mute button with proper icon and click handler
+     * Reduces code duplication across all controllers
+     */
+    public void setupMuteButton(Button muteButton) {
+        if (muteButton == null) return;
+        
+        updateMuteButtonIcon(muteButton);
+        muteButton.setOnAction(e -> {
+            toggleMute();
+            updateMuteButtonIcon(muteButton);
+        });
+    }
+
+    /**
+     * Update mute button icon based on current state
+     */
+    public void updateMuteButtonIcon(Button muteButton) {
+        if (muteButton != null) {
+            muteButton.setText(isMuted() ? "🔇" : "🔊");
+        }
+    }
+}

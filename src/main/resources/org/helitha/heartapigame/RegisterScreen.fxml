@@ -72,7 +72,7 @@
     </VBox>
     
     <!-- Mute Button (on top layer) -->
-    <Button fx:id="muteButton" text="🔊" onAction="#handleMute"
+    <Button fx:id="muteButton" text="🔊"
             styleClass="btn-8bit, btn-ghost" prefWidth="60"
             AnchorPane.topAnchor="15.0" AnchorPane.rightAnchor="15.0"/>
 </AnchorPane>

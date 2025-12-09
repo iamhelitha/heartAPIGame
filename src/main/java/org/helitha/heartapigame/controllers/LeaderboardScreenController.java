@@ -1,16 +1,15 @@
 package org.helitha.heartapigame.controllers;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import org.helitha.heartapigame.managers.AsyncManager;
 import org.helitha.heartapigame.managers.GameManager;
 import org.helitha.heartapigame.managers.GameSession;
 import org.helitha.heartapigame.managers.ScreenManager;
@@ -43,64 +42,38 @@ public class LeaderboardScreenController {
 
     @FXML
     public void initialize() {
-        // Display the final score
         int finalScore = GameManager.getInstance().getScore();
         String difficulty = GameManager.getInstance().getDifficulty();
         String playerName = GameSession.getInstance().getDisplayName();
 
         finalScoreLabel.setText(playerName + "'s Score: " + finalScore + " (" + difficulty + ")");
+        System.out.println("Leaderboard - Player: " + playerName + ", Score: " + finalScore);
 
-        System.out.println("Leaderboard screen loaded");
-        System.out.println("Player: " + playerName + ", Score: " + finalScore + ", Difficulty: " + difficulty);
-
-        // Set up table columns
         rankColumn.setCellValueFactory(cellData -> cellData.getValue().rankProperty().asObject());
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         scoreColumn.setCellValueFactory(cellData -> cellData.getValue().scoreProperty().asObject());
 
-        // Update mute button
-        updateMuteButton();
-
-        // Load all scores from Firebase and sort on the application side
+        SoundManager.getInstance().setupMuteButton(muteButton);
         loadAllScoresSorted();
     }
 
-    private void updateMuteButton() {
-        if (muteButton != null) {
-            muteButton.setText(SoundManager.getInstance().isMuted() ? "🔇" : "🔊");
-        }
-    }
-
-    @FXML
-    private void handleMute() {
-        SoundManager.getInstance().toggleMute();
-        updateMuteButton();
-    }
-
     private void loadAllScoresSorted() {
-        // Load scores in background thread
-        new Thread(() -> {
-            try {
+        AsyncManager.getInstance().runAsync(
+            () -> {
                 List<LeaderboardEntry> allScores = FirebaseService.getInstance().getAllScores();
-
-                // Sort client-side by score descending
                 allScores.sort(Comparator.comparingInt(LeaderboardEntry::getScore).reversed());
-
-                // Convert to table rows with rank
+                return allScores;
+            },
+            allScores -> {
                 ObservableList<LeaderboardRow> rows = FXCollections.observableArrayList();
                 for (int i = 0; i < allScores.size(); i++) {
                     LeaderboardEntry entry = allScores.get(i);
                     rows.add(new LeaderboardRow(i + 1, entry.getUsername(), entry.getScore()));
                 }
-
-                // Update UI on JavaFX thread
-                Platform.runLater(() -> leaderboardTable.setItems(rows));
-
-            } catch (Exception e) {
-                System.err.println("Error loading leaderboard: " + e.getMessage());
-                e.printStackTrace();
-            }
-        }).start();
+                leaderboardTable.setItems(rows);
+            },
+            error -> System.err.println("Error loading leaderboard: " + error.getMessage())
+        );
     }
 
     @FXML
@@ -110,7 +83,7 @@ public class LeaderboardScreenController {
     }
 
     @FXML
-    private void handleHomeButton(ActionEvent event) {
+    private void handleHomeButton() {
         SoundManager.getInstance().playClickSound();
         ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }

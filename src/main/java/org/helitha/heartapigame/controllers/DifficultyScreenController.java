@@ -1,6 +1,5 @@
 package org.helitha.heartapigame.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import org.helitha.heartapigame.managers.GameManager;
@@ -26,21 +25,8 @@ public class DifficultyScreenController {
 
     @FXML
     public void initialize() {
-        // Initialize controller
         System.out.println("Difficulty screen loaded");
-        updateMuteButton();
-    }
-
-    private void updateMuteButton() {
-        if (muteButton != null) {
-            muteButton.setText(SoundManager.getInstance().isMuted() ? "🔇" : "🔊");
-        }
-    }
-
-    @FXML
-    private void handleMute() {
-        SoundManager.getInstance().toggleMute();
-        updateMuteButton();
+        SoundManager.getInstance().setupMuteButton(muteButton);
     }
 
     @FXML
@@ -87,7 +73,7 @@ public class DifficultyScreenController {
     }
 
     @FXML
-    private void handleHomeButton(ActionEvent event) {
+    private void handleHomeButton() {
         SoundManager.getInstance().playClickSound();
         ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }

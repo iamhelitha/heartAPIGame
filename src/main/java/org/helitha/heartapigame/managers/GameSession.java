@@ -1,35 +1,27 @@
 package org.helitha.heartapigame.managers;
 
 import java.util.Random;
+import java.util.prefs.Preferences;
 
 /**
  * GameSession - Manages the current user session and virtual identity
- *
- * VIRTUAL IDENTITY:
- * This class is central to managing the user's virtual identity in the game:
- * - Authenticated users: Have a real Firebase UID and chosen display name
- * - Guest users: Get a temporary identity (e.g., "Guest4721") for anonymous play
- * - The virtual identity personalizes the experience (welcome message, leaderboard name)
- * - This identity persists throughout the game session
- *
- * DESIGN PRINCIPLE: Singleton Pattern
- * Ensures a single session exists across the entire application
- * All screens can access the current user's identity via getInstance()
- *
- * HIGH COHESION:
- * Single responsibility: Manage current user session data
- * All session-related data (userId, displayName, isGuest) is here
+ * Supports session persistence for "Remember Me" functionality
  */
 public class GameSession {
 
     private static GameSession instance;
+    private static final String PREF_USER_ID = "userId";
+    private static final String PREF_DISPLAY_NAME = "displayName";
+    private static final String PREF_IS_GUEST = "isGuest";
 
+    private final Preferences prefs;
     private String userId;
     private String displayName;
     private boolean isGuest;
 
     private GameSession() {
-        // Private constructor for singleton
+        prefs = Preferences.userNodeForPackage(GameSession.class);
+        loadSavedSession();
     }
 
     public static GameSession getInstance() {
@@ -40,27 +32,44 @@ public class GameSession {
     }
 
     /**
-     * Set user session for authenticated user
-     *
-     * VIRTUAL IDENTITY:
-     * Establishes the user's authenticated virtual identity
-     * - userId: Unique identifier from Firebase Authentication
-     * - displayName: The name chosen by the user during registration
+     * Load saved session from preferences if exists
+     */
+    private void loadSavedSession() {
+        String savedUserId = prefs.get(PREF_USER_ID, null);
+        String savedDisplayName = prefs.get(PREF_DISPLAY_NAME, null);
+        boolean savedIsGuest = prefs.getBoolean(PREF_IS_GUEST, false);
+
+        if (savedUserId != null && savedDisplayName != null && !savedIsGuest) {
+            this.userId = savedUserId;
+            this.displayName = savedDisplayName;
+            this.isGuest = false;
+            System.out.println("Restored session for: " + displayName);
+        }
+    }
+
+    /**
+     * Set user session for authenticated user and persist it
      */
     public void setUser(String userId, String displayName) {
         this.userId = userId;
         this.displayName = displayName;
         this.isGuest = false;
+        saveSession();
     }
 
     /**
-     * Create guest user session with random name
-     *
-     * VIRTUAL IDENTITY:
-     * Creates a temporary virtual identity for users who don't want to register
-     * - Assigns a random guest name (e.g., "Guest4721")
-     * - Allows anonymous participation in the game and leaderboard
-     * - No password required, no persistent account created
+     * Save current session to preferences
+     */
+    private void saveSession() {
+        if (!isGuest && userId != null) {
+            prefs.put(PREF_USER_ID, userId);
+            prefs.put(PREF_DISPLAY_NAME, displayName);
+            prefs.putBoolean(PREF_IS_GUEST, false);
+        }
+    }
+
+    /**
+     * Create guest user session (not persisted)
      */
     public void createGuestUser() {
         Random random = new Random();
@@ -71,31 +80,27 @@ public class GameSession {
     }
 
     /**
-     * Clear current session (logout)
-     *
-     * VIRTUAL IDENTITY:
-     * Removes the current virtual identity, requiring re-authentication
+     * Clear current session and remove saved preferences
      */
     public void clearSession() {
         this.userId = null;
         this.displayName = null;
         this.isGuest = false;
+        
+        prefs.remove(PREF_USER_ID);
+        prefs.remove(PREF_DISPLAY_NAME);
+        prefs.remove(PREF_IS_GUEST);
     }
 
-    // Getters
-    public String getUserId() {
-        return userId;
+    /**
+     * Check if there's a saved session that can be restored
+     */
+    public boolean hasSavedSession() {
+        return prefs.get(PREF_USER_ID, null) != null && !prefs.getBoolean(PREF_IS_GUEST, true);
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public boolean isGuest() {
-        return isGuest;
-    }
-
-    public boolean isLoggedIn() {
-        return userId != null && displayName != null;
-    }
+    public String getUserId() { return userId; }
+    public String getDisplayName() { return displayName; }
+    public boolean isGuest() { return isGuest; }
+    public boolean isLoggedIn() { return userId != null && displayName != null; }
 }

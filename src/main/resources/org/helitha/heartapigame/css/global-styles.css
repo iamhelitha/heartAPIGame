@@ -292,3 +292,14 @@
 .hyperlink:hover {
     -fx-text-fill: -fx-pixel-white;
 }
+
+/* ===================================
+   Question Type Background Colors
+   =================================== */
+.hearts-mode {
+    -fx-background-color: #d4a5a5; /* Light red/pink for hearts */
+}
+
+.carrots-mode {
+    -fx-background-color: #e8c49a; /* Light orange for carrots */
+}

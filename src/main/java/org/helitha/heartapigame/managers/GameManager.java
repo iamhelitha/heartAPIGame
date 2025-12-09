@@ -1,41 +1,35 @@
 package org.helitha.heartapigame.managers;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
- * GameManager - Manages the core game state and configuration.
- *
- * DESIGN PRINCIPLE: High Cohesion
- * This class has a single, well-defined responsibility: managing game state (score, difficulty, timer).
- * All game-state-related logic is encapsulated here, making the class highly cohesive.
- *
- * DESIGN PRINCIPLE: Singleton Pattern
- * Ensures only one instance of game state exists throughout the application,
- * providing a global access point for all controllers.
+ * GameManager - Manages the core game state using observable properties
+ * Uses JavaFX Properties for reactive UI updates through binding
  */
 public class GameManager {
 
     private static GameManager instance;
 
-    private int score;
-    private String difficulty;
-    private int timerValue;
+    private final IntegerProperty score = new SimpleIntegerProperty(0);
+    private final StringProperty difficulty = new SimpleStringProperty(EASY);
+    private final IntegerProperty timerValue = new SimpleIntegerProperty(EASY_TIMER);
 
-    // Difficulty constants
     public static final String EASY = "Easy";
     public static final String MEDIUM = "Medium";
     public static final String HARD = "Hard";
 
-    // Timer values for each difficulty (in seconds) - aligned with project requirements
-    public static final int EASY_TIMER = 45;      // 45 seconds for Easy
-    public static final int MEDIUM_TIMER = 30;    // 30 seconds for Medium
-    public static final int HARD_TIMER = 20;      // 20 seconds for Hard
+    public static final int EASY_TIMER = 45;
+    public static final int MEDIUM_TIMER = 30;
+    public static final int HARD_TIMER = 20;
 
-    // Points awarded for correct answers based on difficulty
     public static final int EASY_POINTS = 1;
     public static final int MEDIUM_POINTS = 3;
     public static final int HARD_POINTS = 5;
 
     private GameManager() {
-        // Private constructor for singleton
         resetGame();
     }
 
@@ -46,86 +40,50 @@ public class GameManager {
         return instance;
     }
 
-    /**
-     * Reset game to initial state
-     */
     public void resetGame() {
-        this.score = 0;
-        this.difficulty = EASY;
-        this.timerValue = EASY_TIMER;
+        this.score.set(0);
+        this.difficulty.set(EASY);
+        this.timerValue.set(EASY_TIMER);
     }
 
-    /**
-     * Set difficulty and corresponding timer value
-     */
-    public void setDifficulty(String difficulty) {
-        this.difficulty = difficulty;
-
-        // Set timer based on difficulty
-        switch (difficulty) {
-            case EASY:
-                this.timerValue = EASY_TIMER;
-                break;
-            case MEDIUM:
-                this.timerValue = MEDIUM_TIMER;
-                break;
-            case HARD:
-                this.timerValue = HARD_TIMER;
-                break;
-            default:
-                this.timerValue = EASY_TIMER;
+    public void setDifficulty(String diff) {
+        this.difficulty.set(diff);
+        switch (diff) {
+            case EASY -> this.timerValue.set(EASY_TIMER);
+            case MEDIUM -> this.timerValue.set(MEDIUM_TIMER);
+            case HARD -> this.timerValue.set(HARD_TIMER);
+            default -> this.timerValue.set(EASY_TIMER);
         }
     }
 
-    /**
-     * Add points to score
-     */
     public void addScore(int points) {
-        this.score += points;
+        this.score.set(this.score.get() + points);
     }
 
-    /**
-     * Increment score by 1
-     */
     public void incrementScore() {
-        this.score++;
+        this.score.set(this.score.get() + 1);
     }
 
-    /**
-     * Get points for current difficulty level
-     */
     public int getPointsForDifficulty() {
-        switch (difficulty) {
-            case EASY:
-                return EASY_POINTS;
-            case MEDIUM:
-                return MEDIUM_POINTS;
-            case HARD:
-                return HARD_POINTS;
-            default:
-                return EASY_POINTS;
-        }
+        return switch (difficulty.get()) {
+            case EASY -> EASY_POINTS;
+            case MEDIUM -> MEDIUM_POINTS;
+            case HARD -> HARD_POINTS;
+            default -> EASY_POINTS;
+        };
     }
 
-    // Getters
-    public int getScore() {
-        return score;
-    }
+    // Property getters for binding
+    public IntegerProperty scoreProperty() { return score; }
+    public StringProperty difficultyProperty() { return difficulty; }
+    public IntegerProperty timerValueProperty() { return timerValue; }
 
-    public String getDifficulty() {
-        return difficulty;
-    }
+    // Value getters
+    public int getScore() { return score.get(); }
+    public String getDifficulty() { return difficulty.get(); }
+    public int getTimerValue() { return timerValue.get(); }
 
-    public int getTimerValue() {
-        return timerValue;
-    }
-
-    // Setters
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public void setTimerValue(int timerValue) {
-        this.timerValue = timerValue;
-    }
+    // Value setters
+    public void setScore(int value) { score.set(value); }
+    public void setTimerValue(int value) { timerValue.set(value); }
 }

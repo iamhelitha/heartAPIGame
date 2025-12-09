@@ -2,20 +2,19 @@ package org.helitha.heartapigame.controllers;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 import javafx.scene.media.AudioClip;
+import org.helitha.heartapigame.managers.AsyncManager;
+import org.helitha.heartapigame.managers.GameLogicManager;
 import org.helitha.heartapigame.managers.GameManager;
 import org.helitha.heartapigame.managers.GameSession;
 import org.helitha.heartapigame.managers.ScreenManager;
@@ -24,11 +23,8 @@ import org.helitha.heartapigame.models.GameData;
 import org.helitha.heartapigame.services.ApiService;
 import org.helitha.heartapigame.services.FirebaseService;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 /**
  * PlayScreenController - Main game screen controller
@@ -78,11 +74,12 @@ public class PlayScreenController {
     @FXML
     private Button muteButton;
 
+    @FXML
+    private AnchorPane rootPane;
+
     private Timeline countdown;
     private int timeRemaining;
-    private int correctAnswer;
-    private Random random;
-    private boolean isAskingForHearts;
+    private final GameLogicManager gameLogic = GameLogicManager.getInstance();
 
     // Audio feedback
     private AudioClip correctSound;
@@ -90,31 +87,18 @@ public class PlayScreenController {
 
     @FXML
     public void initialize() {
-        random = new Random();
-
-        // Set initial timer value based on difficulty
         timeRemaining = GameManager.getInstance().getTimerValue();
         updateTimeLabel();
         updateScoreLabel();
-
-        // Load sound effects
         loadSoundEffects();
-
-        // Update mute button
-        updateMuteButton();
+        SoundManager.getInstance().setupMuteButton(muteButton);
 
         System.out.println("========== GAME STARTED ==========");
-        System.out.println("Play screen loaded");
         System.out.println("Difficulty: " + GameManager.getInstance().getDifficulty());
-        System.out.println("Timer: " + timeRemaining + " seconds");
-        System.out.println("Points per correct answer: " + GameManager.getInstance().getPointsForDifficulty());
+        System.out.println("Timer: " + timeRemaining + "s, Points/answer: " + GameManager.getInstance().getPointsForDifficulty());
         System.out.println("==================================");
 
-        // Initialize countdown timer (EVENT-DRIVEN: Time-based events)
-        // Timer will start when first image is loaded
         initializeCountdownTimer();
-
-        // Load first round
         loadNewRound();
     }
 
@@ -190,120 +174,70 @@ public class PlayScreenController {
     }
 
     /**
-     * INTEROPERABILITY: Asynchronous API call to external PHP-based Heart Game API
-     * Load new round by fetching data from API
+     * Load new round by fetching data from API using AsyncManager
      */
     private void loadNewRound() {
-        // Disable buttons while loading
         setButtonsEnabled(false);
-
-        // Pause timer while loading
         pauseCountdownTimer();
 
-        // Fetch data in background thread (EVENT-DRIVEN: Asynchronous event)
-        new Thread(() -> {
-            try {
-                // Call API to get game data (INTEROPERABILITY)
-                GameData gameData = ApiService.getInstance().fetchGameData();
-
+        AsyncManager.getInstance().runAsync(
+            () -> ApiService.getInstance().fetchGameData(),
+            gameData -> {
                 System.out.println("Loaded game data: " + gameData);
-
-                // Update UI on JavaFX thread (EVENT-DRIVEN: Response event)
-                Platform.runLater(() -> {
-                    displayRound(gameData);
-                });
-
-            } catch (Exception e) {
-                System.err.println("Error loading game data: " + e.getMessage());
-                e.printStackTrace();
-
-                // Show error and return to difficulty screen
-                Platform.runLater(() -> {
-                    countdown.stop();
-                    Notifications.create()
-                        .title("Connection Error")
-                        .text("Failed to connect to game API. Please try again.")
-                        .showError();
-                    ScreenManager.getInstance().switchScene("DifficultyScreen.fxml");
-                });
+                displayRound(gameData);
+            },
+            error -> {
+                System.err.println("Error loading game data: " + error.getMessage());
+                countdown.stop();
+                Notifications.create()
+                    .title("Connection Error")
+                    .text("Failed to connect to game API. Please try again.")
+                    .showError();
+                ScreenManager.getInstance().switchScene("DifficultyScreen.fxml");
             }
-        }).start();
+        );
     }
 
     private void displayRound(GameData gameData) {
-        // Load image from URL
         try {
-            Image image = new Image(gameData.question(), true); // true for background loading
+            Image image = new Image(gameData.question(), true);
             imageView.setImage(image);
 
-            // Add listener to start timer only when image is loaded
-            image.progressProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue.doubleValue() >= 1.0) {
-                    // Image fully loaded, start the timer
-                    System.out.println("Image loaded successfully, starting timer");
+            image.progressProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal.doubleValue() >= 1.0) {
                     startCountdownTimer();
                 }
             });
 
-            // Handle image loading errors
-            image.errorProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    System.err.println("Error loading image from: " + gameData.question());
-                    // Start timer anyway to avoid blocking gameplay
+            image.errorProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    System.err.println("Error loading image");
                     startCountdownTimer();
                 }
             });
-
         } catch (Exception e) {
             System.err.println("Error loading image: " + e.getMessage());
-            // Start timer anyway to avoid blocking gameplay
             startCountdownTimer();
         }
 
-        // Randomly decide to ask for HEARTS or CARROTS
-        // This is the core challenge: players must read the prompt carefully!
-        isAskingForHearts = random.nextBoolean();
+        // Use GameLogicManager for game logic
+        String questionText = gameLogic.processGameData(gameData);
+        questionLabel.setText(questionText);
 
-        if (isAskingForHearts) {
-            questionLabel.setText("How many HEARTS ❤?");
-            correctAnswer = gameData.solution();
-        } else {
-            questionLabel.setText("How many CARROTS 🥕?");
-            correctAnswer = gameData.carrots();
-        }
+        // Change background color based on question type (hearts = light red, carrots = light orange)
+        updateBackgroundForQuestionType(gameLogic.isAskingForHearts());
 
-        System.out.println("Question: " + (isAskingForHearts ? "HEARTS" : "CARROTS"));
-        System.out.println("Correct answer: " + correctAnswer);
+        System.out.println("Question: " + (gameLogic.isAskingForHearts() ? "HEARTS" : "CARROTS"));
+        System.out.println("Correct answer: " + gameLogic.getCorrectAnswer());
 
-        // Generate answer options
-        List<Integer> answers = generateAnswerOptions(correctAnswer);
+        List<Integer> answers = gameLogic.generateAnswerOptions();
 
-        // Set button texts
         button1.setText(String.valueOf(answers.get(0)));
         button2.setText(String.valueOf(answers.get(1)));
         button3.setText(String.valueOf(answers.get(2)));
         button4.setText(String.valueOf(answers.get(3)));
 
-        // Enable buttons
         setButtonsEnabled(true);
-    }
-
-    private List<Integer> generateAnswerOptions(int correct) {
-        List<Integer> options = new ArrayList<>();
-        options.add(correct);
-
-        // Generate 3 random wrong answers
-        while (options.size() < 4) {
-            int wrongAnswer = random.nextInt(15); // Random number 0-14
-            if (!options.contains(wrongAnswer)) {
-                options.add(wrongAnswer);
-            }
-        }
-
-        // Shuffle the options
-        Collections.shuffle(options);
-
-        return options;
     }
 
     private void setButtonsEnabled(boolean enabled) {
@@ -311,6 +245,20 @@ public class PlayScreenController {
         button2.setDisable(!enabled);
         button3.setDisable(!enabled);
         button4.setDisable(!enabled);
+    }
+
+    /**
+     * Update background color based on question type
+     * Hearts = light red/pink background
+     * Carrots = light orange background
+     */
+    private void updateBackgroundForQuestionType(boolean isHearts) {
+        rootPane.getStyleClass().removeAll("hearts-mode", "carrots-mode", "main-background");
+        if (isHearts) {
+            rootPane.getStyleClass().add("hearts-mode");
+        } else {
+            rootPane.getStyleClass().add("carrots-mode");
+        }
     }
 
     // EVENT-DRIVEN: User click events
@@ -335,66 +283,42 @@ public class PlayScreenController {
     }
 
     private void checkAnswer(int selectedAnswer) {
-        if (selectedAnswer == correctAnswer) {
-            // Correct answer!
-            System.out.println("Correct answer!");
-
-            // Play correct sound
-            if (correctSound != null) {
-                correctSound.play();
-            }
-
-            // Calculate points based on difficulty
-            int points = GameManager.getInstance().getPointsForDifficulty();
-            GameManager.getInstance().addScore(points);
+        if (gameLogic.checkAnswer(selectedAnswer)) {
+            if (correctSound != null) correctSound.play();
+            
+            gameLogic.applyCorrectAnswer();
             updateScoreLabel();
+            
+            int points = gameLogic.calculatePoints();
+            System.out.println("✓ Correct! +" + points + " pts. Total: " + GameManager.getInstance().getScore());
 
-            System.out.println("✓ Correct! Added " + points + " points (" + GameManager.getInstance().getDifficulty() + " mode). Total score: " + GameManager.getInstance().getScore());
-
-            // Show visual feedback
             Notifications.create()
                 .title("Correct! ✓")
                 .text("+" + points + " points")
                 .hideAfter(Duration.seconds(1.5))
                 .showInformation();
 
-            // Load next round
             loadNewRound();
-
         } else {
-            // Wrong answer
-            System.out.println("✗ Wrong answer! Correct was: " + correctAnswer);
+            if (incorrectSound != null) incorrectSound.play();
+            
+            int penalty = gameLogic.calculatePenalty();
+            gameLogic.applyWrongAnswer();
+            updateScoreLabel();
+            
+            int correctAns = gameLogic.getCorrectAnswer();
+            System.out.println("✗ Wrong! Correct: " + correctAns + ". Total: " + GameManager.getInstance().getScore());
 
-            // Play incorrect sound
-            if (incorrectSound != null) {
-                incorrectSound.play();
-            }
+            String notificationText = penalty > 0 
+                ? "Correct answer: " + correctAns + " (-" + penalty + " point)"
+                : "Correct answer: " + correctAns;
+                
+            Notifications.create()
+                .title("Incorrect ✗")
+                .text(notificationText)
+                .hideAfter(Duration.seconds(2))
+                .showWarning();
 
-            // Subtract points (optional - only for Medium and Hard)
-            if (!GameManager.EASY.equals(GameManager.getInstance().getDifficulty())) {
-                int penalty = 1;
-                int currentScore = GameManager.getInstance().getScore();
-                GameManager.getInstance().setScore(Math.max(0, currentScore - penalty));
-                updateScoreLabel();
-                System.out.println("✗ Lost " + penalty + " point (" + GameManager.getInstance().getDifficulty() + " mode). Total score: " + GameManager.getInstance().getScore());
-
-                // Show visual feedback with penalty
-                Notifications.create()
-                    .title("Incorrect ✗")
-                    .text("Correct answer: " + correctAnswer + " (-" + penalty + " point)")
-                    .hideAfter(Duration.seconds(2))
-                    .showWarning();
-            } else {
-                // Easy mode - no penalty, just show correct answer
-                System.out.println("No penalty in Easy mode. Total score: " + GameManager.getInstance().getScore());
-                Notifications.create()
-                    .title("Incorrect ✗")
-                    .text("Correct answer: " + correctAnswer)
-                    .hideAfter(Duration.seconds(2))
-                    .showWarning();
-            }
-
-            // Still load next round (player continues)
             loadNewRound();
         }
     }
@@ -414,28 +338,17 @@ public class PlayScreenController {
     }
 
     /**
-     * INTEROPERABILITY: Save score to Firebase Firestore (Google's cloud database)
+     * Save score to Firebase Firestore using AsyncManager
      */
     private void saveScoreToFirebase() {
-        // Save score in background thread
-        new Thread(() -> {
-            try {
-                String playerName = GameSession.getInstance().getDisplayName();
-                int finalScore = GameManager.getInstance().getScore();
-                String difficulty = GameManager.getInstance().getDifficulty();
+        String playerName = GameSession.getInstance().getDisplayName();
+        int finalScore = GameManager.getInstance().getScore();
+        String difficulty = GameManager.getInstance().getDifficulty();
 
-                System.out.println("Saving score to Firebase:");
-                System.out.println("Player: " + playerName);
-                System.out.println("Score: " + finalScore);
-                System.out.println("Difficulty: " + difficulty);
-
-                // Save score to Firebase Firestore
-                FirebaseService.getInstance().saveScore(playerName, finalScore);
-
-            } catch (Exception e) {
-                System.err.println("Error saving score to Firebase: " + e.getMessage());
-            }
-        }).start();
+        AsyncManager.getInstance().runAsync(() -> {
+            System.out.println("Saving score - Player: " + playerName + ", Score: " + finalScore + ", Difficulty: " + difficulty);
+            FirebaseService.getInstance().saveScore(playerName, finalScore);
+        });
     }
 
     @FXML
@@ -452,8 +365,7 @@ public class PlayScreenController {
     }
 
     @FXML
-    private void handleHomeButton(ActionEvent event) {
-        // First, stop the timer
+    private void handleHomeButton() {
         if (countdown != null) {
             countdown.stop();
         }
@@ -463,30 +375,14 @@ public class PlayScreenController {
         alert.setHeaderText("Are you sure you want to quit?");
         alert.setContentText("Your current score and progress will be lost.");
 
-        // Show the alert and wait for a response
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // User clicked OK. Go home.
-            ScreenManager sm = new ScreenManager((Stage) ((Node) event.getSource()).getScene().getWindow());
-            sm.switchScene("HomeScreen.fxml");
+            ScreenManager.getInstance().switchScene("HomeScreen.fxml");
         } else {
-            // User clicked Cancel or closed the dialog. Resume the game.
             if (countdown != null) {
                 countdown.play();
             }
         }
-    }
-
-    private void updateMuteButton() {
-        if (muteButton != null) {
-            muteButton.setText(SoundManager.getInstance().isMuted() ? "🔇" : "🔊");
-        }
-    }
-
-    @FXML
-    private void handleMute() {
-        SoundManager.getInstance().toggleMute();
-        updateMuteButton();
     }
 }
