@@ -1,11 +1,7 @@
 package org.helitha.heartapigame.models;
 
-/**
- * AuthResult - Represents the result of Firebase authentication via REST API
- * Used to hold user data returned from signInWithPassword endpoint
- */
 public class AuthResult {
-    private final String localId;      // Firebase UID
+    private final String localId;
     private final String email;
     private final String displayName;
     private final String idToken;

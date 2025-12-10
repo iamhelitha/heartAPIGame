@@ -51,7 +51,6 @@ public class HomeScreenController {
     private void handlePlay() {
         SoundManager.getInstance().playClickSound();
         System.out.println("Starting game for " + GameSession.getInstance().getDisplayName());
-        // Navigate to difficulty selection screen
         ScreenManager.getInstance().switchScene("DifficultyScreen.fxml");
     }
 
@@ -59,7 +58,6 @@ public class HomeScreenController {
     private void handleLeaderboard() {
         SoundManager.getInstance().playClickSound();
         System.out.println("Opening leaderboard");
-        // Navigate to leaderboard screen
         ScreenManager.getInstance().switchScene("LeaderboardScreen.fxml");
     }
 
@@ -67,7 +65,6 @@ public class HomeScreenController {
     private void handleCredits() {
         SoundManager.getInstance().playClickSound();
         System.out.println("Opening credits");
-        // Navigate to credits screen
         ScreenManager.getInstance().switchScene("CreditsScreen.fxml");
     }
 

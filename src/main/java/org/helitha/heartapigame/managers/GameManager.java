@@ -4,11 +4,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-
-/**
- * GameManager - Manages the core game state using observable properties
- * Uses JavaFX Properties for reactive UI updates through binding
- */
 public class GameManager {
 
     private static GameManager instance;
@@ -73,17 +68,14 @@ public class GameManager {
         };
     }
 
-    // Property getters for binding
     public IntegerProperty scoreProperty() { return score; }
     public StringProperty difficultyProperty() { return difficulty; }
     public IntegerProperty timerValueProperty() { return timerValue; }
 
-    // Value getters
     public int getScore() { return score.get(); }
     public String getDifficulty() { return difficulty.get(); }
     public int getTimerValue() { return timerValue.get(); }
 
-    // Value setters
     public void setScore(int value) { score.set(value); }
     public void setTimerValue(int value) { timerValue.set(value); }
 }

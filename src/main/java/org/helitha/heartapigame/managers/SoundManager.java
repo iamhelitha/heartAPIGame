@@ -6,10 +6,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import java.net.URL;
-
-/**
- * Manages all sound effects and background music for the game
- */
 public class SoundManager {
     private static SoundManager instance;
 
@@ -30,25 +26,19 @@ public class SoundManager {
         return instance;
     }
 
-    /**
-     * Load all sound resources
-     */
     private void loadSounds() {
         loadBackgroundMusic();
         loadClickSound();
     }
 
-    /**
-     * Load background music
-     */
     private void loadBackgroundMusic() {
         try {
             URL musicResource = getClass().getResource("/org/helitha/heartapigame/sounds/Jeremy Blake - Powerup!  NO COPYRIGHT 8-bit Music.mp3");
             if (musicResource != null) {
                 Media media = new Media(musicResource.toString());
                 backgroundMusicPlayer = new MediaPlayer(media);
-                backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE); // Loop forever
-                backgroundMusicPlayer.setVolume(0.3); // Set volume to 30%
+                backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+                backgroundMusicPlayer.setVolume(0.3);
                 System.out.println("Background music loaded successfully");
             } else {
                 System.err.println("Background music file not found");
@@ -59,9 +49,6 @@ public class SoundManager {
         }
     }
 
-    /**
-     * Load click sound effect (WAV format for low latency)
-     */
     private void loadClickSound() {
         try {
             URL clickResource = getClass().getResource("/org/helitha/heartapigame/sounds/Mouse Click Sound Effect.wav");
@@ -78,9 +65,6 @@ public class SoundManager {
         }
     }
 
-    /**
-     * Start playing background music
-     */
     public void playBackgroundMusic() {
         if (backgroundMusicPlayer != null && musicEnabled) {
             backgroundMusicPlayer.play();
@@ -88,9 +72,6 @@ public class SoundManager {
         }
     }
 
-    /**
-     * Stop background music
-     */
     public void stopBackgroundMusic() {
         if (backgroundMusicPlayer != null) {
             backgroundMusicPlayer.stop();
@@ -98,45 +79,30 @@ public class SoundManager {
         }
     }
 
-    /**
-     * Pause background music
-     */
     public void pauseBackgroundMusic() {
         if (backgroundMusicPlayer != null) {
             backgroundMusicPlayer.pause();
         }
     }
 
-    /**
-     * Play click sound effect
-     */
     public void playClickSound() {
         if (clickSound != null && soundEffectsEnabled) {
             clickSound.play();
         }
     }
 
-    /**
-     * Set background music volume (0.0 to 1.0)
-     */
     public void setMusicVolume(double volume) {
         if (backgroundMusicPlayer != null) {
             backgroundMusicPlayer.setVolume(Math.max(0.0, Math.min(1.0, volume)));
         }
     }
 
-    /**
-     * Set sound effects volume (0.0 to 1.0)
-     */
     public void setSoundEffectsVolume(double volume) {
         if (clickSound != null) {
             clickSound.setVolume(Math.max(0.0, Math.min(1.0, volume)));
         }
     }
 
-    /**
-     * Enable or disable background music
-     */
     public void setMusicEnabled(boolean enabled) {
         this.musicEnabled = enabled;
         if (!enabled && backgroundMusicPlayer != null) {
@@ -146,58 +112,36 @@ public class SoundManager {
         }
     }
 
-    /**
-     * Enable or disable sound effects
-     */
     public void setSoundEffectsEnabled(boolean enabled) {
         this.soundEffectsEnabled = enabled;
     }
 
-    /**
-     * Check if music is enabled
-     */
     public boolean isMusicEnabled() {
         return musicEnabled;
     }
 
-    /**
-     * Check if sound effects are enabled
-     */
     public boolean isSoundEffectsEnabled() {
         return soundEffectsEnabled;
     }
 
-    /**
-     * Toggle mute state for all sounds
-     * @return true if now muted, false if unmuted
-     */
     public boolean toggleMute() {
         boolean shouldMute = musicEnabled || soundEffectsEnabled;
 
         if (shouldMute) {
-            // Mute everything
             setMusicEnabled(false);
             setSoundEffectsEnabled(false);
         } else {
-            // Unmute everything
             setMusicEnabled(true);
             setSoundEffectsEnabled(true);
         }
 
-        return !musicEnabled; // Return true if muted
+        return !musicEnabled;
     }
 
-    /**
-     * Check if currently muted
-     */
     public boolean isMuted() {
         return !musicEnabled && !soundEffectsEnabled;
     }
 
-    /**
-     * Setup mute button with proper icon and click handler
-     * Reduces code duplication across all controllers
-     */
     public void setupMuteButton(Button muteButton) {
         if (muteButton == null) return;
         
@@ -208,9 +152,6 @@ public class SoundManager {
         });
     }
 
-    /**
-     * Update mute button icon based on current state
-     */
     public void updateMuteButtonIcon(Button muteButton) {
         if (muteButton != null) {
             muteButton.setText(isMuted() ? "🔇" : "🔊");

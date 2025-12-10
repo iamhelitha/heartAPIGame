@@ -28,31 +28,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
-/**
- * FirebaseService - Handles Firebase Authentication and Firestore database operations
- *
- * INTEROPERABILITY:
- * This class demonstrates interoperability with Google's Firebase cloud services:
- * - Firebase Authentication: User registration and login via Google's authentication service
- * - Cloud Firestore: NoSQL database for storing leaderboard data
- * - Communication happens over HTTPS using Firebase Admin SDK
- *
- * VIRTUAL IDENTITY:
- * Users establish a virtual identity by:
- * - Registering with email, password, and display name
- * - Firebase assigns a unique UID (User ID) to each user
- * - This identity is used to personalize the experience and track scores
- * - Guest users get a temporary identity (e.g., "Guest4721")
- *
- * HIGH COHESION:
- * All Firebase-related operations (auth + database) are in this class
- * Single responsibility: Manage user identity and persistent data storage
- *
- * LOW COUPLING:
- * Controllers don't need to know Firebase implementation details
- * They just call methods like registerUser(), saveScore(), getTopScores()
- */
 public class FirebaseService {
 
     private static FirebaseService instance;
@@ -62,7 +37,6 @@ public class FirebaseService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
-    // Firebase REST API endpoint for password sign-in
     private static final String SIGN_IN_URL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=";
 
     private FirebaseService() {
@@ -79,9 +53,6 @@ public class FirebaseService {
         return instance;
     }
 
-    /**
-     * Initialize Firebase Admin SDK with service account key
-     */
     public void initialize() {
         try {
             String credentialsPath = "config/firebase-credentials.json";
@@ -97,8 +68,7 @@ public class FirebaseService {
 
             firebaseAuth = FirebaseAuth.getInstance();
             firestore = FirestoreClient.getFirestore();
-            
-            // Load API key from credentials file for REST API authentication
+
             loadApiKey(credentialsPath);
             
             System.out.println("Firebase initialized successfully");
@@ -109,15 +79,10 @@ public class FirebaseService {
         }
     }
 
-    /**
-     * Load the Firebase Web API key from environment or config
-     */
     private void loadApiKey(String credentialsPath) {
-        // Try to load from environment variable first
         firebaseApiKey = System.getenv("FIREBASE_API_KEY");
-        
+
         if (firebaseApiKey == null || firebaseApiKey.isEmpty()) {
-            // Try to load from a separate config file
             try (InputStream is = new FileInputStream("config/firebase-api-key.txt")) {
                 firebaseApiKey = new String(is.readAllBytes()).trim();
             } catch (IOException e) {
@@ -127,18 +92,6 @@ public class FirebaseService {
         }
     }
 
-    /**
-     * Register a new user with Firebase Authentication
-     *
-     * VIRTUAL IDENTITY:
-     * Creates a new virtual identity for the user with:
-     * - Unique UID assigned by Firebase
-     * - Email and password for authentication
-     * - Display name for personalization
-     *
-     * INTEROPERABILITY:
-     * Communicates with Google's Firebase Authentication service over HTTPS
-     */
     public UserRecord registerUser(String email, String password, String displayName) {
         if (firebaseAuth == null) {
             System.err.println("Firebase not initialized");
@@ -163,10 +116,6 @@ public class FirebaseService {
         }
     }
 
-    /**
-     * Login user by verifying credentials using Firebase REST API
-     * This properly verifies the password against Firebase Authentication
-     */
     public AuthResult loginUser(String email, String password) {
         if (firebaseApiKey == null || firebaseApiKey.isEmpty()) {
             System.err.println("Firebase API key not configured - cannot verify password");
@@ -174,7 +123,6 @@ public class FirebaseService {
         }
 
         try {
-            // Build JSON request body
             String requestBody = objectMapper.writeValueAsString(Map.of(
                     "email", email,
                     "password", password,
@@ -202,7 +150,6 @@ public class FirebaseService {
                 System.out.println("Login successful for user: " + localId);
                 return new AuthResult(localId, userEmail, displayName, idToken, refreshToken, registered);
             } else {
-                // Parse error response
                 JsonNode errorJson = objectMapper.readTree(response.body());
                 String errorMessage = errorJson.path("error").path("message").asText("Unknown error");
                 System.err.println("Login failed: " + errorMessage);
@@ -214,9 +161,6 @@ public class FirebaseService {
         }
     }
 
-    /**
-     * Get user by UID
-     */
     public UserRecord getUserById(String uid) {
         if (firebaseAuth == null) {
             System.err.println("Firebase not initialized");
@@ -231,16 +175,6 @@ public class FirebaseService {
         }
     }
 
-    /**
-     * Save score to Firestore leaderboard collection
-     *
-     * INTEROPERABILITY:
-     * Stores data in Google's Cloud Firestore (NoSQL database)
-     * Data is synchronized across all clients in real-time
-     *
-     * VIRTUAL IDENTITY:
-     * Associates the score with the player's display name (virtual identity)
-     */
     public void saveScore(String username, int score) {
         if (firestore == null) {
             System.err.println("Firestore not initialized");
@@ -252,11 +186,9 @@ public class FirebaseService {
             scoreData.put("username", username);
             scoreData.put("score", score);
             scoreData.put("timestamp", System.currentTimeMillis());
-
-            // Add document to leaderboard collection
             firestore.collection("leaderboard")
                     .add(scoreData)
-                    .get(); // Wait for completion
+                    .get();
 
             System.out.println("Score saved successfully: " + username + " - " + score);
 
@@ -266,12 +198,6 @@ public class FirebaseService {
         }
     }
 
-    /**
-     * Get top 10 scores from leaderboard, ordered by score descending
-     *
-     * INTEROPERABILITY:
-     * Queries Cloud Firestore database and retrieves data
-     */
     public List<LeaderboardEntry> getTopScores() {
         List<LeaderboardEntry> topScores = new ArrayList<>();
 
@@ -281,7 +207,6 @@ public class FirebaseService {
         }
 
         try {
-            // Query leaderboard collection, order by score descending, limit to 10
             List<QueryDocumentSnapshot> documents = firestore.collection("leaderboard")
                     .orderBy("score", Query.Direction.DESCENDING)
                     .limit(10)
@@ -289,7 +214,6 @@ public class FirebaseService {
                     .get()
                     .getDocuments();
 
-            // Convert documents to LeaderboardEntry objects
             for (QueryDocumentSnapshot document : documents) {
                 String username = document.getString("username");
                 Long scoreLong = document.getLong("score");
@@ -308,10 +232,6 @@ public class FirebaseService {
         return topScores;
     }
 
-    /**
-     * Get ALL scores from leaderboard without server-side ordering or limiting.
-     * Sorting and ranking should be handled on the application side.
-     */
     public List<LeaderboardEntry> getAllScores() {
         List<LeaderboardEntry> scores = new ArrayList<>();
 
@@ -330,8 +250,6 @@ public class FirebaseService {
                 String username = document.getString("username");
                 Long scoreLong = document.getLong("score");
                 int score = scoreLong != null ? scoreLong.intValue() : 0;
-
-                // Only add valid entries
                 if (username != null && !username.isEmpty()) {
                     scores.add(new LeaderboardEntry(username, score));
                 }

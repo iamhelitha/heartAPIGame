@@ -2,11 +2,6 @@ package org.helitha.heartapigame.managers;
 
 import java.util.Random;
 import java.util.prefs.Preferences;
-
-/**
- * GameSession - Manages the current user session and virtual identity
- * Supports session persistence for "Remember Me" functionality
- */
 public class GameSession {
 
     private static GameSession instance;
@@ -31,9 +26,6 @@ public class GameSession {
         return instance;
     }
 
-    /**
-     * Load saved session from preferences if exists
-     */
     private void loadSavedSession() {
         String savedUserId = prefs.get(PREF_USER_ID, null);
         String savedDisplayName = prefs.get(PREF_DISPLAY_NAME, null);
@@ -47,9 +39,6 @@ public class GameSession {
         }
     }
 
-    /**
-     * Set user session for authenticated user and persist it
-     */
     public void setUser(String userId, String displayName) {
         this.userId = userId;
         this.displayName = displayName;
@@ -57,9 +46,6 @@ public class GameSession {
         saveSession();
     }
 
-    /**
-     * Save current session to preferences
-     */
     private void saveSession() {
         if (!isGuest && userId != null) {
             prefs.put(PREF_USER_ID, userId);
@@ -68,9 +54,6 @@ public class GameSession {
         }
     }
 
-    /**
-     * Create guest user session (not persisted)
-     */
     public void createGuestUser() {
         Random random = new Random();
         int guestNumber = random.nextInt(9999) + 1;
@@ -79,9 +62,6 @@ public class GameSession {
         this.isGuest = true;
     }
 
-    /**
-     * Clear current session and remove saved preferences
-     */
     public void clearSession() {
         this.userId = null;
         this.displayName = null;
@@ -92,9 +72,6 @@ public class GameSession {
         prefs.remove(PREF_IS_GUEST);
     }
 
-    /**
-     * Check if there's a saved session that can be restored
-     */
     public boolean hasSavedSession() {
         return prefs.get(PREF_USER_ID, null) != null && !prefs.getBoolean(PREF_IS_GUEST, true);
     }

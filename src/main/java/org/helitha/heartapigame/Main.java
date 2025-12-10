@@ -11,17 +11,15 @@ import org.helitha.heartapigame.services.FirebaseService;
 import java.io.IOException;
 
 public class Main extends Application {
-    // Window size constants used across the app
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 600;
 
     @Override
     public void start(Stage stage) throws IOException {
-        // Load custom font before initializing any UI
         try {
             Font customFont = Font.loadFont(
                 getClass().getResourceAsStream("fonts/PressStart2P-Regular.ttf"), 
-                12 // Default size, can be changed via CSS
+                12
             );
             if (customFont != null) {
                 System.out.println("Custom font loaded successfully: " + customFont.getFamily());
@@ -32,11 +30,9 @@ public class Main extends Application {
             System.err.println("Error loading custom font: " + e.getMessage());
             e.printStackTrace();
         }
-        
-        // Initialize Firebase
+
         FirebaseService.getInstance().initialize();
 
-        // Initialize ScreenManager with the primary stage
         new ScreenManager(stage);
 
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("LoadingScreen.fxml"));

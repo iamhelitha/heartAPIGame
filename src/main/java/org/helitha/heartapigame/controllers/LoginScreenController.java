@@ -24,8 +24,7 @@ public class LoginScreenController {
     public void initialize() {
         SoundManager.getInstance().playBackgroundMusic();
         SoundManager.getInstance().setupMuteButton(muteButton);
-        
-        // Check for saved session and auto-login
+
         if (GameSession.getInstance().hasSavedSession() && GameSession.getInstance().isLoggedIn()) {
             System.out.println("Auto-login: Welcome back " + GameSession.getInstance().getDisplayName());
             ScreenManager.getInstance().switchScene("HomeScreen.fxml");
@@ -46,7 +45,6 @@ public class LoginScreenController {
         AuthResult authResult = FirebaseService.getInstance().loginUser(email, password);
 
         if (authResult != null) {
-            // setUser automatically persists the session
             GameSession.getInstance().setUser(
                 authResult.getLocalId(),
                 authResult.getDisplayName() != null ? authResult.getDisplayName() : email

@@ -78,7 +78,6 @@ public class LeaderboardScreenController {
 
     @FXML
     private void handleBackToHome() {
-        // Return to home screen
         ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }
 
@@ -88,9 +87,6 @@ public class LeaderboardScreenController {
         ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }
 
-    /**
-     * Inner class to represent a row in the leaderboard table
-     */
     public static class LeaderboardRow {
         private final SimpleIntegerProperty rank;
         private final SimpleStringProperty name;

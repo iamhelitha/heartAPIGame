@@ -47,25 +47,21 @@ public class RegisterScreenController {
         String email = emailField.getText().trim();
         String password = passwordField.getText();
 
-        // Validate all fields are filled
         if (displayName.isEmpty() || email.isEmpty() || password.isEmpty()) {
             System.out.println("Please fill in all fields");
             return;
         }
 
-        // Validate email format
         if (!EMAIL_PATTERN.matcher(email).matches()) {
             System.out.println("Please enter a valid email address");
             return;
         }
 
-        // Validate password length (Firebase requires minimum 6 characters)
         if (password.length() < MIN_PASSWORD_LENGTH) {
             System.out.println("Password must be at least " + MIN_PASSWORD_LENGTH + " characters long");
             return;
         }
 
-        // Call Firebase registration
         var userRecord = FirebaseService.getInstance().registerUser(email, password, displayName);
 
         if (userRecord != null) {
@@ -80,7 +76,6 @@ public class RegisterScreenController {
     @FXML
     private void handleBackToLogin() {
         SoundManager.getInstance().playClickSound();
-        // Switch back to login screen
         ScreenManager.getInstance().switchScene("LoginScreen.fxml");
     }
 }

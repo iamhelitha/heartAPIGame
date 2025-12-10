@@ -38,7 +38,7 @@ public class ApiService {
                 System.err.println("API fetch attempt " + attempt + " failed: " + e.getMessage());
                 
                 if (attempt < MAX_RETRIES) {
-                    long backoffMs = (long) Math.pow(2, attempt) * 500; // Exponential backoff: 1s, 2s, 4s
+                    long backoffMs = (long) Math.pow(2, attempt) * 500;
                     System.out.println("Retrying in " + backoffMs + "ms...");
                     Thread.sleep(backoffMs);
                 }

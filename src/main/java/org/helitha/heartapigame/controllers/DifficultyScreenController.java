@@ -34,10 +34,7 @@ public class DifficultyScreenController {
         SoundManager.getInstance().playClickSound();
         System.out.println("Easy difficulty selected");
         GameManager.getInstance().setDifficulty(GameManager.EASY);
-        // Reset only the score, not the difficulty
         GameManager.getInstance().setScore(0);
-
-        // Switch to play screen
         ScreenManager.getInstance().switchScene("PlayScreen.fxml");
     }
 
@@ -46,10 +43,7 @@ public class DifficultyScreenController {
         SoundManager.getInstance().playClickSound();
         System.out.println("Medium difficulty selected");
         GameManager.getInstance().setDifficulty(GameManager.MEDIUM);
-        // Reset only the score, not the difficulty
         GameManager.getInstance().setScore(0);
-
-        // Switch to play screen
         ScreenManager.getInstance().switchScene("PlayScreen.fxml");
     }
 
@@ -58,17 +52,13 @@ public class DifficultyScreenController {
         SoundManager.getInstance().playClickSound();
         System.out.println("Hard difficulty selected");
         GameManager.getInstance().setDifficulty(GameManager.HARD);
-        // Reset only the score, not the difficulty
         GameManager.getInstance().setScore(0);
-
-        // Switch to play screen
         ScreenManager.getInstance().switchScene("PlayScreen.fxml");
     }
 
     @FXML
     private void handleBack() {
         SoundManager.getInstance().playClickSound();
-        // Return to home screen
         ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }
 

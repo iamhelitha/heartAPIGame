@@ -6,11 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-
-/**
- * GameLogicManager - Handles core game logic separate from UI controller
- * Improves cohesion by extracting game logic into dedicated class
- */
 public class GameLogicManager {
 
     private static GameLogicManager instance;
@@ -30,10 +25,6 @@ public class GameLogicManager {
         return instance;
     }
 
-    /**
-     * Process game data and determine question type
-     * Returns the question text to display
-     */
     public String processGameData(GameData gameData) {
         askingForHearts = random.nextBoolean();
         
@@ -46,9 +37,6 @@ public class GameLogicManager {
         }
     }
 
-    /**
-     * Generate shuffled answer options including the correct answer
-     */
     public List<Integer> generateAnswerOptions() {
         List<Integer> options = new ArrayList<>();
         options.add(correctAnswer);
@@ -64,39 +52,24 @@ public class GameLogicManager {
         return options;
     }
 
-    /**
-     * Check if the selected answer is correct
-     */
     public boolean checkAnswer(int selectedAnswer) {
         return selectedAnswer == correctAnswer;
     }
 
-    /**
-     * Calculate points for correct answer based on difficulty
-     */
     public int calculatePoints() {
         return GameManager.getInstance().getPointsForDifficulty();
     }
 
-    /**
-     * Calculate penalty for wrong answer (only for non-easy modes)
-     */
     public int calculatePenalty() {
         String difficulty = GameManager.getInstance().getDifficulty();
         return GameManager.EASY.equals(difficulty) ? 0 : 1;
     }
 
-    /**
-     * Apply correct answer: add points to score
-     */
     public void applyCorrectAnswer() {
         int points = calculatePoints();
         GameManager.getInstance().addScore(points);
     }
 
-    /**
-     * Apply wrong answer: subtract penalty if applicable
-     */
     public void applyWrongAnswer() {
         int penalty = calculatePenalty();
         if (penalty > 0) {

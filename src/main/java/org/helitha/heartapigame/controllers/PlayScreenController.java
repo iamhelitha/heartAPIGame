@@ -25,26 +25,6 @@ import org.helitha.heartapigame.services.FirebaseService;
 
 import java.util.List;
 import java.util.Optional;
-
-/**
- * PlayScreenController - Main game screen controller
- *
- * EVENT-DRIVEN PROGRAMMING:
- * - User events: Button clicks (handleAnswer1-4), timer events (countdown)
- * - Time-driven events: Timeline fires every second to update timer
- * - Asynchronous events: API responses trigger UI updates via Platform.runLater()
- *
- * INTEROPERABILITY:
- * - Communicates with Heart Game API (PHP server) via HTTP GET requests
- * - Parses JSON responses and displays images/data from external service
- * - The "contract" is the JSON format: {"question": "url", "solution": hearts, "carrots": count}
- *
- * LOW COUPLING:
- * - Doesn't directly depend on other controllers
- * - Uses ApiService for API communication (abstraction)
- * - Uses GameManager for state management
- * - Uses ScreenManager for navigation
- */
 public class PlayScreenController {
 
     @FXML
@@ -81,7 +61,6 @@ public class PlayScreenController {
     private int timeRemaining;
     private final GameLogicManager gameLogic = GameLogicManager.getInstance();
 
-    // Audio feedback
     private AudioClip correctSound;
     private AudioClip incorrectSound;
 
@@ -102,9 +81,6 @@ public class PlayScreenController {
         loadNewRound();
     }
 
-    /**
-     * Load audio feedback sounds for correct/incorrect answers
-     */
     private void loadSoundEffects() {
         try {
             var correctResource = getClass().getResource("/correct.wav");
@@ -123,9 +99,6 @@ public class PlayScreenController {
         }
     }
 
-    /**
-     * EVENT-DRIVEN: Initialize the countdown timer (but don't start it yet)
-     */
     private void initializeCountdownTimer() {
         countdown = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             timeRemaining--;
@@ -138,18 +111,12 @@ public class PlayScreenController {
         countdown.setCycleCount(Timeline.INDEFINITE);
     }
 
-    /**
-     * Start or resume the countdown timer
-     */
     private void startCountdownTimer() {
         if (countdown != null) {
             countdown.play();
         }
     }
 
-    /**
-     * Pause the countdown timer
-     */
     private void pauseCountdownTimer() {
         if (countdown != null) {
             countdown.pause();
@@ -158,8 +125,6 @@ public class PlayScreenController {
 
     private void updateTimeLabel() {
         timeLabel.setText("Time: " + timeRemaining);
-
-        // Change color based on remaining time
         if (timeRemaining <= 10) {
             timeLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #f44336;");
         } else if (timeRemaining <= 20) {
@@ -173,9 +138,6 @@ public class PlayScreenController {
         scoreLabel.setText("Score: " + GameManager.getInstance().getScore());
     }
 
-    /**
-     * Load new round by fetching data from API using AsyncManager
-     */
     private void loadNewRound() {
         setButtonsEnabled(false);
         pauseCountdownTimer();
@@ -219,12 +181,8 @@ public class PlayScreenController {
             System.err.println("Error loading image: " + e.getMessage());
             startCountdownTimer();
         }
-
-        // Use GameLogicManager for game logic
         String questionText = gameLogic.processGameData(gameData);
         questionLabel.setText(questionText);
-
-        // Change background color based on question type (hearts = light red, carrots = light orange)
         updateBackgroundForQuestionType(gameLogic.isAskingForHearts());
 
         System.out.println("Question: " + (gameLogic.isAskingForHearts() ? "HEARTS" : "CARROTS"));
@@ -247,11 +205,6 @@ public class PlayScreenController {
         button4.setDisable(!enabled);
     }
 
-    /**
-     * Update background color based on question type
-     * Hearts = light red/pink background
-     * Carrots = light orange background
-     */
     private void updateBackgroundForQuestionType(boolean isHearts) {
         rootPane.getStyleClass().removeAll("hearts-mode", "carrots-mode", "main-background");
         if (isHearts) {
@@ -261,7 +214,6 @@ public class PlayScreenController {
         }
     }
 
-    // EVENT-DRIVEN: User click events
     @FXML
     private void handleAnswer1() {
         checkAnswer(Integer.parseInt(button1.getText()));
@@ -324,22 +276,16 @@ public class PlayScreenController {
     }
 
     private void handleGameOver() {
-        // Stop the timer
         countdown.stop();
 
         System.out.println("Game Over!");
         System.out.println("Final Score: " + GameManager.getInstance().getScore());
 
-        // Save score to Firebase (in background) - INTEROPERABILITY
         saveScoreToFirebase();
 
-        // Switch to leaderboard screen
         ScreenManager.getInstance().switchScene("LeaderboardScreen.fxml");
     }
 
-    /**
-     * Save score to Firebase Firestore using AsyncManager
-     */
     private void saveScoreToFirebase() {
         String playerName = GameSession.getInstance().getDisplayName();
         int finalScore = GameManager.getInstance().getScore();
@@ -353,14 +299,12 @@ public class PlayScreenController {
 
     @FXML
     private void handleExit() {
-        // Stop the timer
         if (countdown != null) {
             countdown.stop();
         }
 
         System.out.println("Exiting game. Final score: " + GameManager.getInstance().getScore());
 
-        // Return to home screen
         ScreenManager.getInstance().switchScene("HomeScreen.fxml");
     }
 

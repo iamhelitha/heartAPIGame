@@ -22,7 +22,6 @@ public class LoadingScreenController implements Initializable {
         loadingTask = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                // Total target duration ~1360ms (increased by 1 second)
                 updateMessage("Loading game logic...");
                 updateProgress(0, 100);
                 Thread.sleep(160);
@@ -46,16 +45,13 @@ public class LoadingScreenController implements Initializable {
             }
         };
 
-        // Bind properties
         progressBar.progressProperty().bind(loadingTask.progressProperty());
         statusLabel.textProperty().bind(loadingTask.messageProperty());
 
-        // Switch screen on success
         loadingTask.setOnSucceeded(e -> {
             ScreenManager.getInstance().switchScene("LoginScreen.fxml");
         });
 
-        // Start the task on a background daemon thread
         Thread t = new Thread(loadingTask);
         t.setDaemon(true);
         t.start();
