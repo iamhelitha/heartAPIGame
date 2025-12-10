@@ -1,15 +1,16 @@
 package org.helitha.heartapigame.controllers;
 
+import org.helitha.heartapigame.managers.GameSession;
+import org.helitha.heartapigame.managers.ScreenManager;
+import org.helitha.heartapigame.managers.SoundManager;
+import org.helitha.heartapigame.models.AuthResult;
+import org.helitha.heartapigame.services.FirebaseService;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.helitha.heartapigame.models.AuthResult;
-import org.helitha.heartapigame.services.FirebaseService;
-import org.helitha.heartapigame.managers.GameSession;
-import org.helitha.heartapigame.managers.ScreenManager;
-import org.helitha.heartapigame.managers.SoundManager;
 
 public class LoginScreenController {
 
@@ -45,11 +46,16 @@ public class LoginScreenController {
         AuthResult authResult = FirebaseService.getInstance().loginUser(email, password);
 
         if (authResult != null) {
+            // Store complete authentication result including tokens
             GameSession.getInstance().setUser(
                 authResult.getLocalId(),
-                authResult.getDisplayName() != null ? authResult.getDisplayName() : email
+                authResult.getDisplayName() != null ? authResult.getDisplayName() : authResult.getEmail(),
+                authResult.getEmail(),
+                authResult.getIdToken(),
+                authResult.getRefreshToken()
             );
             System.out.println("Login successful! Welcome " + GameSession.getInstance().getDisplayName());
+            System.out.println("Identity tokens stored for session: ID token and refresh token");
             ScreenManager.getInstance().switchScene("HomeScreen.fxml");
         } else {
             System.out.println("Login failed. Please check your credentials.");
