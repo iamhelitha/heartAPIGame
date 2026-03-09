@@ -40,38 +40,77 @@ jobs:
         if: runner.os != 'Windows'
         run: chmod +x mvnw
 
-      - name: Build jlink executable image (Unix)
-        if: runner.os != 'Windows'
-        run: ./mvnw -B -ntp clean javafx:jlink
-
-      - name: Build jlink executable image (Windows)
-        if: runner.os == 'Windows'
-        run: .\\mvnw.cmd -B -ntp clean javafx:jlink
-
-      - name: Prepare release asset (Unix)
+      - name: Build app and copy runtime dependencies (Unix)
         if: runner.os != 'Windows'
         run: |
-          if [ ! -f target/app.zip ]; then
-            echo "Expected file target/app.zip was not produced."
-            ls -la target
-            exit 1
-          fi
-          cp target/app.zip heartAPIGame-${{ runner.os }}-${{ env.RELEASE_TAG }}.zip
+          ./mvnw -B -ntp clean package dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/dependency
 
-      - name: Prepare release asset (Windows)
+      - name: Build app and copy runtime dependencies (Windows)
         if: runner.os == 'Windows'
+        run: .\\mvnw.cmd -B -ntp clean package dependency:copy-dependencies -DincludeScope=runtime -DoutputDirectory=target/dependency
+
+      - name: Resolve artifact metadata
+        id: artifact
         shell: pwsh
         run: |
-          if (-not (Test-Path "target/app.zip")) {
-            Write-Host "Expected file target/app.zip was not produced."
+          [xml]$pom = Get-Content "pom.xml"
+          $artifactId = $pom.project.artifactId
+          $version = $pom.project.version
+          $jarName = "$artifactId-$version.jar"
+
+          if (-not (Test-Path "target/$jarName")) {
+            Write-Host "Expected jar target/$jarName was not produced."
             Get-ChildItem target
             exit 1
           }
-          Copy-Item "target/app.zip" "heartAPIGame-${{ runner.os }}-${{ env.RELEASE_TAG }}.zip"
+
+          "artifact_id=$artifactId" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "jar_name=$jarName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Prepare runnable bundle (Unix)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          BUNDLE_DIR="release/${{ steps.artifact.outputs.artifact_id }}-${{ runner.os }}-${{ env.RELEASE_TAG }}"
+          mkdir -p "$BUNDLE_DIR/lib"
+
+          cp "target/${{ steps.artifact.outputs.jar_name }}" "$BUNDLE_DIR/"
+          cp target/dependency/*.jar "$BUNDLE_DIR/lib/"
+
+          cat > "$BUNDLE_DIR/run.sh" << 'EOF'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+          java -cp "$SCRIPT_DIR/${{ steps.artifact.outputs.jar_name }}:$SCRIPT_DIR/lib/*" org.helitha.heartapigame.Launcher
+          EOF
+
+          chmod +x "$BUNDLE_DIR/run.sh"
+          cd release
+          zip -r "${{ steps.artifact.outputs.artifact_id }}-${{ runner.os }}-${{ env.RELEASE_TAG }}.zip" "${{ steps.artifact.outputs.artifact_id }}-${{ runner.os }}-${{ env.RELEASE_TAG }}"
+
+      - name: Prepare runnable bundle (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $bundleDir = "release/${{ steps.artifact.outputs.artifact_id }}-${{ runner.os }}-${{ env.RELEASE_TAG }}"
+          New-Item -ItemType Directory -Path "$bundleDir/lib" -Force | Out-Null
+
+          Copy-Item "target/${{ steps.artifact.outputs.jar_name }}" "$bundleDir/"
+          Copy-Item "target/dependency/*.jar" "$bundleDir/lib/"
+
+          @"
+          @echo off
+          setlocal
+          set "SCRIPT_DIR=%~dp0"
+          java -cp "%SCRIPT_DIR%${{ steps.artifact.outputs.jar_name }};%SCRIPT_DIR%lib\\*" org.helitha.heartapigame.Launcher
+          "@ | Set-Content -Path "$bundleDir/run.bat"
+
+          Compress-Archive -Path "$bundleDir" -DestinationPath "release/${{ steps.artifact.outputs.artifact_id }}-${{ runner.os }}-${{ env.RELEASE_TAG }}.zip" -Force
 
       - name: Upload asset to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.RELEASE_TAG }}
-          files: heartAPIGame-${{ runner.os }}-${{ env.RELEASE_TAG }}.zip
+          files: release/${{ steps.artifact.outputs.artifact_id }}-${{ runner.os }}-${{ env.RELEASE_TAG }}.zip
           overwrite_files: true
